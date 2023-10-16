@@ -5,14 +5,15 @@ import (
 )
 
 func main() {
-    engine.Start("Bloodmage Engine")
-    defer engine.Quit()
+	engine.Start("Bloodmage Engine")
+	defer engine.Quit()
 
-    for engine.Running() {
-        engine.RenderViewport()
-        if engine.KeyDown(engine.Escape) {
-            break
-        }
-        engine.Present()
-    }
+	for engine.Running() {
+        engine.MovePlayer()
+		engine.RenderViewport()
+		if engine.KeyDown(engine.KeyEscape) {
+			break
+		}
+		engine.Present()
+	}
 }

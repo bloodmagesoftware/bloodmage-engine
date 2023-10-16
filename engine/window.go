@@ -7,11 +7,14 @@ import (
 var (
 	bkg              sdl.Color = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 	title            string
-	width            int32 = 800
-	height           int32 = 800
+	width            int32   = 800
+	width_f64        float64 = float64(width)
+	height           int32   = 800
+	height_f64       float64 = float64(height)
 	renderer         *sdl.Renderer
 	window           *sdl.Window
-	frame_start_time uint32
+	frame_start_time uint64
+	DeltaTime        uint64
 	mouse            sdl.Point
 	mousestate       uint32
 	keystates        = sdl.GetKeyboardState()
@@ -20,7 +23,8 @@ var (
 )
 
 const (
-	target_frame_time uint32 = 1000 / 60
+	target_frame_time uint64 = 1000 / 60
+	pixel_scale       int32  = 4
 )
 
 func setColor(r, g, b, a uint8) sdl.Color {
@@ -44,7 +48,7 @@ func Start(t string) {
 		title,
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		width, height,
-		sdl.WINDOW_SHOWN|sdl.WINDOW_FULLSCREEN_DESKTOP)
+		sdl.WINDOW_SHOWN) //|sdl.WINDOW_FULLSCREEN_DESKTOP)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +58,9 @@ func Start(t string) {
 	}
 	running = true
 	width, height = window.GetSize()
-	frame_start_time = sdl.GetTicks()
+    width_f64 = float64(width)
+    height_f64 = float64(height)
+	frame_start_time = sdl.GetTicks64()
 }
 
 func Quit() {
@@ -85,7 +91,10 @@ func beginRender() {
 }
 
 func Running() bool {
-    frame_start_time = sdl.GetTicks()
+	now := sdl.GetTicks64()
+	DeltaTime = now - frame_start_time
+	frame_start_time = now
+
 	input()
 	beginRender()
 	return running
@@ -93,8 +102,8 @@ func Running() bool {
 
 func Present() {
 	renderer.Present()
-    frame_time := sdl.GetTicks() - frame_start_time
-    if frame_time < target_frame_time {
-        sdl.Delay(target_frame_time - frame_time)
-    }
+	frame_time := sdl.GetTicks64() - frame_start_time
+	if frame_time < target_frame_time {
+		sdl.Delay(uint32(target_frame_time - frame_time))
+	}
 }
