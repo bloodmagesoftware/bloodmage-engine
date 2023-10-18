@@ -9,5 +9,5 @@ type player struct {
 }
 
 var (
-	P = player{cell_size * 2, cell_size * 1.5, 0, 0, 0}
+	P = player{2, 1.5, 0, 0, 0}
 )

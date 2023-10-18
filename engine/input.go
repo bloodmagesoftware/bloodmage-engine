@@ -6,27 +6,34 @@ import (
 )
 
 const (
-	KeyForward   = sdl.SCANCODE_W
-	KeyBack      = sdl.SCANCODE_S
-	KeyLeft      = sdl.SCANCODE_A
-	KeyRight     = sdl.SCANCODE_D
-	KeyTurnRight = sdl.SCANCODE_E
-	KeyTurnLeft  = sdl.SCANCODE_Q
-	KeyEscape    = sdl.SCANCODE_ESCAPE
-	speed        = 1
+	KeyForward         = sdl.SCANCODE_W
+	KeyBack            = sdl.SCANCODE_S
+	KeyLeft            = sdl.SCANCODE_A
+	KeyRight           = sdl.SCANCODE_D
+	KeyEscape          = sdl.SCANCODE_ESCAPE
+	speed      float64 = 3
+	turnSpeed  float64 = 0.1
 )
+
+var (
+	MouseX, MouseY           int32
+	MouseDeltaX, MouseDeltaY int32
+	mouse_state              uint32
+)
+
+func getMouseInput() {
+	MouseX, MouseY, mouse_state = sdl.GetMouseState()
+	MouseDeltaX = MouseX - center_x
+	MouseDeltaY = MouseY - center_y
+	window.WarpMouseInWindow(center_x, center_y)
+}
 
 func KeyDown(key uint8) bool {
 	return keystates[key] != 0
 }
 
-func applyInputEvents() {
-	if KeyDown(KeyTurnRight) {
-		P.Angle += 0.1
-	}
-	if KeyDown(KeyTurnLeft) {
-		P.Angle -= 0.1
-	}
+func MovePlayer() {
+	P.Angle += float64(MouseDeltaX) * turnSpeed * DeltaTime
 
 	if KeyDown(KeyForward) {
 		P.Speed = speed
@@ -44,19 +51,22 @@ func applyInputEvents() {
 		P.Strafe = 0
 	}
 
-	if KeyDown(KeyTurnRight) {
-		P.Angle += 0.1
-	} else if KeyDown(KeyTurnLeft) {
-		P.Angle -= 0.1
-	} else {
-		P.Angle = P.Angle
+	var x, y int
+	x_dir := P.Speed*math.Cos(P.Angle) + P.Strafe*math.Cos(P.Angle+math.Pi/2)
+	new_x := P.X + x_dir*DeltaTime
+	buffer_x := new_x + x_dir*0.01
+	y = int(math.Floor(P.Y))
+	x = int(math.Floor(buffer_x))
+	if x > 0 && x < len(level[y]) && level[y][x] == 0 {
+		P.X = new_x
 	}
-}
 
-func MovePlayer() {
-	applyInputEvents()
-	P.X += P.Speed * math.Cos(P.Angle)
-	P.Y += P.Speed * math.Sin(P.Angle)
-	P.X += P.Strafe * math.Cos(P.Angle+math.Pi/2)
-	P.Y += P.Strafe * math.Sin(P.Angle+math.Pi/2)
+	y_dir := P.Speed*math.Sin(P.Angle) + P.Strafe*math.Sin(P.Angle+math.Pi/2)
+	new_y := P.Y + y_dir*DeltaTime
+	buffer_y := new_y + y_dir*0.01
+	x = int(math.Floor(P.X))
+	y = int(math.Floor(buffer_y))
+	if y > 0 && y < len(level) && level[y][x] == 0 {
+		P.Y = new_y
+	}
 }
