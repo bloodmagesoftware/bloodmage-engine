@@ -1,4 +1,4 @@
-module game.frankmayer.io
+module bloodmagesoftware.io
 
 go 1.21.2
 
