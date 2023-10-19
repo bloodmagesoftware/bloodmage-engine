@@ -74,6 +74,7 @@ func Start(t string) {
 	if err != nil {
 		panic(err)
 	}
+	initUI()
 	running = true
 	updateWindowSize()
 	frame_start_time = sdl.GetTicks64()

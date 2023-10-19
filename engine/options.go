@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -29,32 +29,32 @@ var (
 func InitOptions(ident string) {
 	data_path = getDataPath(ident)
 	if os.IsNotExist(os.ErrNotExist) {
-		fmt.Println("Creating data directory", data_path)
+		log.Println("Creating data directory", data_path)
 		err := os.MkdirAll(data_path, 0775)
 		if err != nil {
-			fmt.Println("Error creating data directory", data_path)
+			log.Println("Error creating data directory", data_path)
 			os.Exit(1)
 		}
 	}
 
 	engine_options_path := filepath.Join(data_path, "engine.yaml")
 	if os.IsExist(os.ErrExist) {
-		fmt.Println("Loading options from", engine_options_path)
+		log.Println("Loading options from", engine_options_path)
 		err := options.Load(engine_options_path)
 		if err != nil {
-			fmt.Println("Error loading options", engine_options_path)
-			fmt.Println("Saving default options to", engine_options_path)
+			log.Println("Error loading options", engine_options_path)
+			log.Println("Saving default options to", engine_options_path)
 			err := options.Save(engine_options_path)
 			if err != nil {
-				fmt.Println("Error saving options", engine_options_path)
+				log.Println("Error saving options", engine_options_path)
 			}
 			os.Exit(1)
 		}
 	} else {
-		fmt.Println("Saving default options to", engine_options_path)
+		log.Println("Saving default options to", engine_options_path)
 		err := options.Save(engine_options_path)
 		if err != nil {
-			fmt.Println("Error saving options", engine_options_path)
+			log.Println("Error saving options", engine_options_path)
 			os.Exit(1)
 		}
 	}
