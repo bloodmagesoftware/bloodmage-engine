@@ -23,9 +23,14 @@ var (
 
 func getMouseInput() {
 	MouseX, MouseY, mouse_state = sdl.GetMouseState()
-	MouseDeltaX = MouseX - center_x
-	MouseDeltaY = MouseY - center_y
-	window.WarpMouseInWindow(center_x, center_y)
+	if cursor_locked {
+		MouseDeltaX = MouseX - center_x
+		MouseDeltaY = MouseY - center_y
+		window.WarpMouseInWindow(center_x, center_y)
+	} else {
+		MouseDeltaX = 0
+		MouseDeltaY = 0
+	}
 }
 
 func KeyDown(key uint8) bool {
@@ -69,4 +74,22 @@ func MovePlayer() {
 	if y > 0 && y < len(level) && level[y][x] == 0 {
 		P.Y = new_y
 	}
+}
+
+func SetCursorLock(lock bool) {
+	cursor_locked = lock
+	if cursor_locked {
+		sdl.ShowCursor(sdl.DISABLE)
+		sdl.SetRelativeMouseMode(true)
+		window.SetGrab(true)
+		window.WarpMouseInWindow(center_x, center_y)
+	} else {
+		sdl.ShowCursor(sdl.ENABLE)
+		sdl.SetRelativeMouseMode(false)
+		window.SetGrab(false)
+	}
+}
+
+func IsCursorLocked() bool {
+	return cursor_locked
 }

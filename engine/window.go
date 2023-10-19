@@ -26,6 +26,7 @@ var (
 	keystates        = sdl.GetKeyboardState()
 	event            sdl.Event
 	running          bool
+	cursor_locked    bool
 )
 
 const (
@@ -70,9 +71,6 @@ func Start(t string, fs bool) {
 	if err != nil {
 		panic(err)
 	}
-	sdl.ShowCursor(sdl.DISABLE)
-	sdl.SetRelativeMouseMode(true)
-	window.SetGrab(true)
 	running = true
 	updateWindowSize()
 	frame_start_time = sdl.GetTicks64()
