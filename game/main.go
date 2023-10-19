@@ -5,7 +5,8 @@ import (
 )
 
 func main() {
-	engine.Start("Bloodmage Engine", false)
+	engine.InitOptions("bloodmage-engine")
+	engine.Start("Bloodmage Engine")
 	defer engine.Stop()
 
 	engine.SetCursorLock(true)

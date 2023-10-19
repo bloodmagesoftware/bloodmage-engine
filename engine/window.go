@@ -31,7 +31,6 @@ var (
 
 const (
 	target_frame_time uint64 = 1000 / 60
-	pixel_scale       int32  = 4
 )
 
 func setColor(r, g, b, a uint8) sdl.Color {
@@ -43,7 +42,10 @@ func setColor(r, g, b, a uint8) sdl.Color {
 	return c
 }
 
-func Start(t string, fs bool) {
+func Start(t string) {
+	if window != nil {
+		panic("window already started")
+	}
 	title = t
 	sdl.SetHint(sdl.HINT_RENDER_SCALE_QUALITY, "0")
 	var err error
@@ -51,23 +53,24 @@ func Start(t string, fs bool) {
 	if err != nil {
 		panic(err)
 	}
-	if fs {
-		window, err = sdl.CreateWindow(
-			title,
-			sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-			width, height,
-			sdl.WINDOW_SHOWN|sdl.WINDOW_FULLSCREEN)
-	} else {
-		window, err = sdl.CreateWindow(
-			title,
-			sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-			width, height,
-			sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
+	window_flags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
+	if options.Fullscreen {
+		window_flags |= sdl.WINDOW_FULLSCREEN
 	}
+	window, err = sdl.CreateWindow(
+		title,
+		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+		width, height,
+		window_flags)
 	if err != nil {
 		panic(err)
 	}
-	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
+
+	renderer_flags := uint32(sdl.RENDERER_ACCELERATED)
+	if options.Vsync {
+		renderer_flags |= sdl.RENDERER_PRESENTVSYNC
+	}
+	renderer, err = sdl.CreateRenderer(window, -1, renderer_flags)
 	if err != nil {
 		panic(err)
 	}
@@ -87,8 +90,8 @@ func updateWindowSize() {
 	center_x = width / 2
 	center_y = height / 2
 
-	num_of_rays = width / 2
-	delta_angle = fov / (width_f64 / 2)
+	num_of_rays = width / options.PixelScale
+	delta_angle = fov / (width_f64 / float64(options.PixelScale))
 	scale = width / int32(num_of_rays)
 }
 
