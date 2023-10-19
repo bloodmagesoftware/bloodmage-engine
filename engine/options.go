@@ -28,11 +28,12 @@ var (
 // If it does exist, load it.
 func InitOptions(ident string) {
 	data_path = getDataPath(ident)
-	fmt.Println(data_path)
 	if os.IsNotExist(os.ErrNotExist) {
+		fmt.Println("Creating data directory", data_path)
 		err := os.MkdirAll(data_path, 0775)
 		if err != nil {
-			panic(err)
+			fmt.Println("Error creating data directory", data_path)
+			os.Exit(1)
 		}
 	}
 
@@ -41,13 +42,20 @@ func InitOptions(ident string) {
 		fmt.Println("Loading options from", engine_options_path)
 		err := options.Load(engine_options_path)
 		if err != nil {
-			panic(err)
+			fmt.Println("Error loading options", engine_options_path)
+			fmt.Println("Saving default options to", engine_options_path)
+			err := options.Save(engine_options_path)
+			if err != nil {
+				fmt.Println("Error saving options", engine_options_path)
+			}
+			os.Exit(1)
 		}
 	} else {
 		fmt.Println("Saving default options to", engine_options_path)
 		err := options.Save(engine_options_path)
 		if err != nil {
-			panic(err)
+			fmt.Println("Error saving options", engine_options_path)
+			os.Exit(1)
 		}
 	}
 }
