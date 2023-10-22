@@ -1,6 +1,6 @@
 # Bloodmage Engine
 
-90s style 3D game engine build in [Go](https://go.dev/) using [SDL2](https://www.libsdl.org/)
+90s style 3D game engine built in [Go](https://go.dev/) using [SDL2](https://www.libsdl.org/)
 
 <a
   href="https://github.com/new?template_name=bloodmage-engine&template_owner=bloodmagesoftware">
