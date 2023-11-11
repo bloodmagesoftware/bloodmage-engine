@@ -16,4 +16,5 @@
 
 -   Install dependencies: `selene install`
 -   Run: `selene run`
--   Build for deployment: `selene build`
+-   Build executable: `selene build`
+-   Package for deployment: `selene pack`
