@@ -1,0 +1,5 @@
+---
+vsync: true
+fullscreen: true
+pixel_scale: 4
+log_level: -4

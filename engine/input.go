@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 	"math"
 )
@@ -16,17 +17,19 @@ const (
 )
 
 var (
-	MouseX, MouseY           int32
-	MouseDeltaX, MouseDeltaY int32
-	mouse_state              uint32
+	MouseY      int32
+	MouseX      int32
+	MouseDeltaY int32
+	MouseDeltaX int32
+	MouseState  uint32
 )
 
 func getMouseInput() {
-	MouseX, MouseY, mouse_state = sdl.GetMouseState()
-	if cursor_locked {
-		MouseDeltaX = MouseX - center_x
-		MouseDeltaY = MouseY - center_y
-		window.WarpMouseInWindow(center_x, center_y)
+	MouseX, MouseY, MouseState = sdl.GetMouseState()
+	if cursorLocked {
+		MouseDeltaX = MouseX - centerX
+		MouseDeltaY = MouseY - centerY
+		window.WarpMouseInWindow(centerX, centerY)
 	} else {
 		MouseDeltaX = 0
 		MouseDeltaY = 0
@@ -34,7 +37,7 @@ func getMouseInput() {
 }
 
 func KeyDown(key uint8) bool {
-	return keystates[key] != 0
+	return keyStates[key] != 0
 }
 
 func MovePlayer() {
@@ -57,39 +60,47 @@ func MovePlayer() {
 	}
 
 	var x, y int
-	x_dir := P.Speed*math.Cos(P.Angle) + P.Strafe*math.Cos(P.Angle+math.Pi/2)
-	new_x := P.X + x_dir*DeltaTime
-	buffer_x := new_x + x_dir*0.01
+	xDir := P.Speed*math.Cos(P.Angle) + P.Strafe*math.Cos(P.Angle+math.Pi/2)
+	newX := P.X + xDir*DeltaTime
+	bufferX := newX + xDir*0.01
 	y = int(math.Floor(P.Y))
-	x = int(math.Floor(buffer_x))
+	x = int(math.Floor(bufferX))
 	if x > 0 && x < len(level[y]) && level[y][x] == 0 {
-		P.X = new_x
+		P.X = newX
 	}
 
-	y_dir := P.Speed*math.Sin(P.Angle) + P.Strafe*math.Sin(P.Angle+math.Pi/2)
-	new_y := P.Y + y_dir*DeltaTime
-	buffer_y := new_y + y_dir*0.01
+	yDir := P.Speed*math.Sin(P.Angle) + P.Strafe*math.Sin(P.Angle+math.Pi/2)
+	newY := P.Y + yDir*DeltaTime
+	bufferY := newY + yDir*0.01
 	x = int(math.Floor(P.X))
-	y = int(math.Floor(buffer_y))
+	y = int(math.Floor(bufferY))
 	if y > 0 && y < len(level) && level[y][x] == 0 {
-		P.Y = new_y
+		P.Y = newY
 	}
 }
 
 func SetCursorLock(lock bool) {
-	cursor_locked = lock
-	if cursor_locked {
-		sdl.ShowCursor(sdl.DISABLE)
+	cursorLocked = lock
+	if cursorLocked {
+		_, err := sdl.ShowCursor(sdl.DISABLE)
+		if err != nil {
+			log.Error(err)
+			return
+		}
 		sdl.SetRelativeMouseMode(true)
 		window.SetGrab(true)
-		window.WarpMouseInWindow(center_x, center_y)
+		window.WarpMouseInWindow(centerX, centerY)
 	} else {
-		sdl.ShowCursor(sdl.ENABLE)
+		_, err := sdl.ShowCursor(sdl.ENABLE)
+		if err != nil {
+			log.Error(err)
+			return
+		}
 		sdl.SetRelativeMouseMode(false)
 		window.SetGrab(false)
 	}
 }
 
 func IsCursorLocked() bool {
-	return cursor_locked
+	return cursorLocked
 }

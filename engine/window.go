@@ -8,39 +8,29 @@ import (
 
 var (
 	// Time in seconds since last frame
-	DeltaTime        float64
-	bkg              sdl.Color = sdl.Color{R: 0, G: 0, B: 0, A: 255}
-	title            string
-	width            int32   = 800
-	width_f64        float64 = float64(width)
-	half_width_f64   float64 = width_f64 / 2
-	height           int32   = 800
-	height_f64       float64 = float64(height)
-	half_height_f64  float64 = height_f64 / 2
-	center_x         int32   = width / 2
-	center_y         int32   = height / 2
-	screen_dist      float64 = 0.5
-	renderer         *sdl.Renderer
-	window           *sdl.Window
-	frame_start_time uint64
-	keystates        = sdl.GetKeyboardState()
-	event            sdl.Event
-	running          bool
-	cursor_locked    bool
+	DeltaTime      float64
+	bkg            sdl.Color = sdl.Color{R: 0, G: 0, B: 0, A: 255}
+	title          string
+	width          int32   = 800
+	widthF64       float64 = float64(width)
+	halfWidthF64   float64 = widthF64 / 2
+	height         int32   = 800
+	heightF64      float64 = float64(height)
+	halfHeightF64  float64 = heightF64 / 2
+	centerX        int32   = width / 2
+	centerY        int32   = height / 2
+	screenDist     float64 = 0.5
+	renderer       *sdl.Renderer
+	window         *sdl.Window
+	frameStartTime uint64
+	keyStates      = sdl.GetKeyboardState()
+	running        bool
+	cursorLocked   bool
 )
 
 const (
-	target_frame_time uint64 = 1000 / 60
+	targetFrameTime uint64 = 1000 / 60
 )
-
-func setColor(r, g, b, a uint8) sdl.Color {
-	var c sdl.Color
-	c.R = r
-	c.G = g
-	c.B = b
-	c.A = a
-	return c
-}
 
 func Start(t string) {
 	if window != nil {
@@ -53,58 +43,57 @@ func Start(t string) {
 	if err != nil {
 		panic(err)
 	}
-	window_flags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
+	windowFlags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
 	if options.Fullscreen {
-		window_flags |= sdl.WINDOW_FULLSCREEN
+		windowFlags |= sdl.WINDOW_FULLSCREEN
 	}
 	window, err = sdl.CreateWindow(
 		title,
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		width, height,
-		window_flags)
+		windowFlags)
 	if err != nil {
 		panic(err)
 	}
 
-	renderer_flags := uint32(sdl.RENDERER_ACCELERATED)
+	rendererFlags := uint32(sdl.RENDERER_ACCELERATED)
 	if options.Vsync {
-		renderer_flags |= sdl.RENDERER_PRESENTVSYNC
+		rendererFlags |= sdl.RENDERER_PRESENTVSYNC
 	}
-	renderer, err = sdl.CreateRenderer(window, -1, renderer_flags)
+	renderer, err = sdl.CreateRenderer(window, -1, rendererFlags)
 	if err != nil {
 		panic(err)
 	}
-	initUI()
 	running = true
 	updateWindowSize()
-	frame_start_time = sdl.GetTicks64()
+	frameStartTime = sdl.GetTicks64()
 }
 
 func updateWindowSize() {
 	width, height = window.GetSize()
-	width_f64 = float64(width)
-	half_width_f64 = width_f64 / 2
-	height_f64 = float64(height)
-	half_width_f64 = width_f64 / 2
-	screen_dist = half_width_f64 / math.Tan(half_fov)
+	widthF64 = float64(width)
+	halfWidthF64 = widthF64 / 2
+	heightF64 = float64(height)
+	halfWidthF64 = widthF64 / 2
+	screenDist = halfWidthF64 / math.Tan(halfFov)
 
-	center_x = width / 2
-	center_y = height / 2
+	centerX = width / 2
+	centerY = height / 2
 
-	num_of_rays = width / options.PixelScale
-	delta_angle = fov / (width_f64 / float64(options.PixelScale))
-	scale = width / int32(num_of_rays)
+	numOfRays = width / options.PixelScale
+	deltaAngle = fov / (widthF64 / float64(options.PixelScale))
+	scale = width / int32(numOfRays)
 }
 
 func Stop() {
 	running = false
-	window.Destroy()
-	renderer.Destroy()
+	_ = window.Destroy()
+	_ = renderer.Destroy()
 	sdl.Quit()
 }
 
 func input() {
-	keystates = sdl.GetKeyboardState()
+	keyStates = sdl.GetKeyboardState()
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch event.GetType() {
 		case sdl.QUIT:
@@ -127,8 +116,8 @@ func beginRender() {
 
 func Running() bool {
 	now := sdl.GetTicks64()
-	DeltaTime = float64(now-frame_start_time) / 1000.0
-	frame_start_time = now
+	DeltaTime = float64(now-frameStartTime) / 1000.0
+	frameStartTime = now
 
 	input()
 	beginRender()
@@ -137,8 +126,8 @@ func Running() bool {
 
 func Present() {
 	renderer.Present()
-	frame_time := sdl.GetTicks64() - frame_start_time
-	if frame_time < target_frame_time {
-		sdl.Delay(uint32(target_frame_time - frame_time))
+	frameTime := sdl.GetTicks64() - frameStartTime
+	if frameTime < targetFrameTime {
+		sdl.Delay(uint32(targetFrameTime - frameTime))
 	}
 }

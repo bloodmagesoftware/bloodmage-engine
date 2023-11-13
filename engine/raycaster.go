@@ -1,23 +1,23 @@
 package engine
 
 import (
+	"github.com/charmbracelet/log"
 	"math"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	cell_size         = 32
-	fov       float64 = math.Pi / 3
-	half_fov          = fov / 2
-	max_depth         = 20
-	epsilon           = 1e-6
+	fov      float64 = math.Pi / 3
+	halfFov          = fov / 2
+	maxDepth         = 20
+	epsilon          = 1e-6
 )
 
 var (
-	num_of_rays int32
-	delta_angle float64
-	scale       int32
+	numOfRays  int32
+	deltaAngle float64
+	scale      int32
 
 	level = [][]int{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -33,96 +33,104 @@ var (
 func RenderViewport() {
 	ox := P.X
 	oy := P.Y
-	x_level := math.Floor(ox)
-	y_level := math.Floor(oy)
+	xLevel := math.Floor(ox)
+	yLevel := math.Floor(oy)
 
-	ray_angle := P.Angle - half_fov + epsilon
-	for ray := int32(0); ray < num_of_rays; ray++ {
-		sin_a := math.Sin(ray_angle)
-		cos_a := math.Cos(ray_angle)
+	rayAngle := P.Angle - halfFov + epsilon
+	for ray := int32(0); ray < numOfRays; ray++ {
+		sinA := math.Sin(rayAngle)
+		cosA := math.Cos(rayAngle)
 
 		var dy float64
 		var dx float64
-		var delta_depth float64
+		var deltaDepth float64
 
 		// horizontals
-		var y_hor float64
-		if sin_a > 0 {
-			y_hor = y_level + 1
+		var yHor float64
+		if sinA > 0 {
+			yHor = yLevel + 1
 			dy = 1.0
 		} else {
-			y_hor = y_level - epsilon
+			yHor = yLevel - epsilon
 			dy = -1.0
 		}
-		depth_hor := (y_hor - oy) / sin_a
-		x_hor := ox + depth_hor*cos_a
-		delta_depth = dy / sin_a
-		dx = delta_depth * cos_a
-		for i := 0; i < max_depth; i++ {
-			tile_x := int(math.Floor(x_hor))
-			tile_y := int(math.Floor(y_hor))
-			if tile_x < 0 || tile_x >= len(level[0]) || tile_y < 0 || tile_y >= len(level) {
+		depthHor := (yHor - oy) / sinA
+		xHor := ox + depthHor*cosA
+		deltaDepth = dy / sinA
+		dx = deltaDepth * cosA
+		for i := 0; i < maxDepth; i++ {
+			tileX := int(math.Floor(xHor))
+			tileY := int(math.Floor(yHor))
+			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
 				break
 			}
-			if level[tile_y][tile_x] != 0 {
+			if level[tileY][tileX] != 0 {
 				break
 			}
-			x_hor += dx
-			y_hor += dy
-			depth_hor += delta_depth
+			xHor += dx
+			yHor += dy
+			depthHor += deltaDepth
 		}
 
 		// verticals
-		var x_vert float64
-		if cos_a > 0 {
-			x_vert = x_level + 1
+		var xVert float64
+		if cosA > 0 {
+			xVert = xLevel + 1
 			dx = 1.0
 		} else {
-			x_vert = x_level - epsilon
+			xVert = xLevel - epsilon
 			dx = -1.0
 		}
-		depth_vert := (x_vert - ox) / cos_a
-		y_vert := oy + depth_vert*sin_a
-		delta_depth = dx / cos_a
-		dy = delta_depth * sin_a
-		for i := 0; i < max_depth; i++ {
-			tile_x := int(math.Floor(x_vert))
-			tile_y := int(math.Floor(y_vert))
-			if tile_x < 0 || tile_x >= len(level[0]) || tile_y < 0 || tile_y >= len(level) {
+		depthVert := (xVert - ox) / cosA
+		yVert := oy + depthVert*sinA
+		deltaDepth = dx / cosA
+		dy = deltaDepth * sinA
+		for i := 0; i < maxDepth; i++ {
+			tileX := int(math.Floor(xVert))
+			tileY := int(math.Floor(yVert))
+			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
 				break
 			}
-			if level[tile_y][tile_x] != 0 {
+			if level[tileY][tileX] != 0 {
 				break
 			}
-			x_vert += dx
-			y_vert += dy
-			depth_vert += delta_depth
+			xVert += dx
+			yVert += dy
+			depthVert += deltaDepth
 		}
 
 		// depth
 		var depth float64
-		if depth_hor < depth_vert {
-			depth = depth_hor
+		if depthHor < depthVert {
+			depth = depthHor
 		} else {
-			depth = depth_vert
+			depth = depthVert
 		}
 
 		// remove fish eye
-		depth *= math.Cos(P.Angle - ray_angle)
+		depth *= math.Cos(P.Angle - rayAngle)
 
 		// projection
-		proj_height := screen_dist / (depth + epsilon)
+		projHeight := screenDist / (depth + epsilon)
 
 		// draw wall
 		rect := sdl.Rect{
-			ray * scale, int32(half_height_f64 - proj_height/2),
-			scale, int32(proj_height),
+			X: ray * scale, Y: int32(halfHeightF64 - projHeight/2),
+			W: scale, H: int32(projHeight),
 		}
-		// ditsant walls are darker
-		darknes := uint8(255 / (depth + 1))
-		renderer.SetDrawColor(darknes, darknes, darknes, 255)
-		renderer.FillRect(&rect)
+		// distant walls are darker
+		darkness := uint8(255 / (depth + 1))
+		err := renderer.SetDrawColor(darkness, darkness, darkness, 255)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		err = renderer.FillRect(&rect)
+		if err != nil {
+			log.Error(err)
+			return
+		}
 
-		ray_angle += delta_angle
+		rayAngle += deltaAngle
 	}
 }

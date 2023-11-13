@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/charmbracelet/log"
+)
 
 func main() {
-	fmt.Println("Hello, Editor!")
+	log.Info("Hello, Editor!")
 }
