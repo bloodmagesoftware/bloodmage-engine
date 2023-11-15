@@ -3,6 +3,7 @@ package engine
 import (
 	"math"
 
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -34,14 +35,14 @@ const (
 
 func Start(t string) {
 	if window != nil {
-		panic("window already started")
+		log.Fatal("window already started")
 	}
 	title = t
 	sdl.SetHint(sdl.HINT_RENDER_SCALE_QUALITY, "0")
 	var err error
 	err = sdl.Init(sdl.INIT_EVERYTHING)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	windowFlags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
 	if options.Fullscreen {
@@ -53,7 +54,7 @@ func Start(t string) {
 		width, height,
 		windowFlags)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	rendererFlags := uint32(sdl.RENDERER_ACCELERATED)
@@ -62,11 +63,15 @@ func Start(t string) {
 	}
 	renderer, err = sdl.CreateRenderer(window, -1, rendererFlags)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	running = true
 	updateWindowSize()
 	frameStartTime = sdl.GetTicks64()
+}
+
+func Window() *sdl.Window {
+    return window
 }
 
 func updateWindowSize() {
@@ -107,10 +112,10 @@ func input() {
 
 func beginRender() {
 	if err := renderer.SetDrawColor(bkg.R, bkg.G, bkg.B, bkg.A); err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	if err := renderer.Clear(); err != nil {
-		panic(err)
+		log.Error(err)
 	}
 }
 

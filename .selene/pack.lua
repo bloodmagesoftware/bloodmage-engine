@@ -1,4 +1,4 @@
-local pack = require("_pack")
+local pack = require("_project")
 local bin_name = pack.bin_name
 
 local exe_name = require("build")
