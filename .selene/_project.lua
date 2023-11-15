@@ -1,6 +1,6 @@
 Selene.git_clone_or_pull("https://github.com/exosite/lua-yaml.git", "mod/yaml")
 
-function read(file)
+local function read(file)
 	local f = assert(io.open(file, "r")) -- Open the file in read mode
 
 	-- Read the entire file content as a string
