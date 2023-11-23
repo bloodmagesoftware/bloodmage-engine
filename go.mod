@@ -1,4 +1,4 @@
-module bloodmagesoftware.io
+module github.com/bloodmagesoftware/bloodmage-engine
 
 go 1.21.2
 

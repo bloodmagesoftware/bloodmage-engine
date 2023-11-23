@@ -1,1 +1,1 @@
-os.execute("go run game/main.go")
+os.execute("go run cmd/game/main.go")

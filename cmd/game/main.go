@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bloodmagesoftware.io/engine"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine"
 )
 
 func main() {
