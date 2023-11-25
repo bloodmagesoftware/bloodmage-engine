@@ -24,3 +24,6 @@ go.work
 .idea/
 .vscode/
 .fleet/
+
+# Settings
+data/

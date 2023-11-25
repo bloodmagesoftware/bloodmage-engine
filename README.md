@@ -18,3 +18,10 @@
 -   Run: `selene run`
 -   Build executable: `selene build`
 -   Package for deployment: `selene pack`
+
+## Dependencies
+
+-   [github.com/charmbracelet/log](https://pkg.go.dev/github.com/charmbracelet/log)
+-   [github.com/chewxy/math32](https://pkg.go.dev/github.com/chewxy/math32)
+-   [github.com/go-yaml/yaml](https://pkg.go.dev/github.com/go-yaml/yaml)
+-   [github.com/veandco/go-sdl2](https://pkg.go.dev/github.com/veandco/go-sdl2)

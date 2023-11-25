@@ -14,73 +14,63 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package engine
+package firstperson
 
 import (
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/constants"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
 	"github.com/charmbracelet/log"
-	"math"
-
+	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	fov      float64 = math.Pi / 3
-	halfFov          = fov / 2
-	maxDepth         = 20
-	epsilon          = 1e-6
+	fov            = math32.Pi / 3
+	halfFov        = fov / 2
+	maxDepth int32 = 20
 )
 
 var (
 	numOfRays  int32
-	deltaAngle float64
+	deltaAngle float32
 	scale      int32
-
-	level = [][]int{
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
-		{1, 0, 1, 1, 1, 0, 0, 0, 0, 1},
-		{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	}
+	screenDist float32 = 0.5
 )
 
 func RenderViewport() {
-	ox := P.X
-	oy := P.Y
-	xLevel := math.Floor(ox)
-	yLevel := math.Floor(oy)
+	ox := core.P.X
+	oy := core.P.Y
+	xLevel := math32.Floor(ox)
+	yLevel := math32.Floor(oy)
 
-	rayAngle := P.Angle - halfFov + epsilon
+	rayAngle := core.P.Angle - halfFov + constants.Epsilon
 	for ray := int32(0); ray < numOfRays; ray++ {
-		sinA := math.Sin(rayAngle)
-		cosA := math.Cos(rayAngle)
+		sinA := math32.Sin(rayAngle)
+		cosA := math32.Cos(rayAngle)
 
-		var dy float64
-		var dx float64
-		var deltaDepth float64
+		var dy float32
+		var dx float32
+		var deltaDepth float32
 
 		// horizontals
-		var yHor float64
+		var yHor float32
 		if sinA > 0 {
 			yHor = yLevel + 1
-			dy = 1.0
+			dy = 1
 		} else {
-			yHor = yLevel - epsilon
-			dy = -1.0
+			yHor = yLevel - constants.Epsilon
+			dy = -1
 		}
 		depthHor := (yHor - oy) / sinA
 		xHor := ox + depthHor*cosA
 		deltaDepth = dy / sinA
 		dx = deltaDepth * cosA
-		for i := 0; i < maxDepth; i++ {
-			tileX := int(math.Floor(xHor))
-			tileY := int(math.Floor(yHor))
-			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
-				break
-			}
-			if level[tileY][tileX] != 0 {
+		var i int32
+		for i = 0; i < maxDepth; i++ {
+			tileX := int(math32.Floor(xHor))
+			tileY := int(math32.Floor(yHor))
+			if level.Collision(tileX, tileY) {
 				break
 			}
 			xHor += dx
@@ -89,25 +79,22 @@ func RenderViewport() {
 		}
 
 		// verticals
-		var xVert float64
+		var xVert float32
 		if cosA > 0 {
 			xVert = xLevel + 1
-			dx = 1.0
+			dx = 1
 		} else {
-			xVert = xLevel - epsilon
-			dx = -1.0
+			xVert = xLevel - constants.Epsilon
+			dx = -1
 		}
 		depthVert := (xVert - ox) / cosA
 		yVert := oy + depthVert*sinA
 		deltaDepth = dx / cosA
 		dy = deltaDepth * sinA
-		for i := 0; i < maxDepth; i++ {
-			tileX := int(math.Floor(xVert))
-			tileY := int(math.Floor(yVert))
-			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
-				break
-			}
-			if level[tileY][tileX] != 0 {
+		for i = 0; i < maxDepth; i++ {
+			tileX := int(math32.Floor(xVert))
+			tileY := int(math32.Floor(yVert))
+			if level.Collision(tileX, tileY) {
 				break
 			}
 			xVert += dx
@@ -116,7 +103,7 @@ func RenderViewport() {
 		}
 
 		// depth
-		var depth float64
+		var depth float32
 		if depthHor < depthVert {
 			depth = depthHor
 		} else {
@@ -124,24 +111,24 @@ func RenderViewport() {
 		}
 
 		// remove fish eye
-		depth *= math.Cos(P.Angle - rayAngle)
+		depth *= math32.Cos(core.P.Angle - rayAngle)
 
 		// projection
-		projHeight := screenDist / (depth + epsilon)
+		projHeight := screenDist / (depth + constants.Epsilon)
 
 		// draw wall
 		rect := sdl.Rect{
-			X: ray * scale, Y: int32(halfHeightF64 - projHeight/2),
+			X: ray * scale, Y: int32(core.HalfHeightF() - projHeight/2),
 			W: scale, H: int32(projHeight),
 		}
 		// distant walls are darker
 		darkness := uint8(255 / (depth + 1))
-		err := renderer.SetDrawColor(darkness, darkness, darkness, 255)
+		err := core.Renderer().SetDrawColor(darkness, darkness, darkness, 255)
 		if err != nil {
 			log.Error(err)
 			return
 		}
-		err = renderer.FillRect(&rect)
+		err = core.Renderer().FillRect(&rect)
 		if err != nil {
 			log.Error(err)
 			return
