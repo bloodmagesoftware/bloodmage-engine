@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package engine
+package core
 
 type player struct {
-	X      float64
-	Y      float64
-	Angle  float64
-	Speed  float64
-	Strafe float64
+	X      float32
+	Y      float32
+	Angle  float32
+	Speed  float32
+	Strafe float32
 }
 
 var (

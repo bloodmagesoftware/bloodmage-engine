@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package engine
+package core
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/charmbracelet/log"
 	"github.com/go-yaml/yaml"
+	"os"
+	"path/filepath"
 )
 
-type Options struct {
+type Opt struct {
 	Vsync      bool      `yaml:"vsync"`
 	Fullscreen bool      `yaml:"fullscreen"`
 	PixelScale int32     `yaml:"pixel_scale"`
@@ -32,8 +31,8 @@ type Options struct {
 }
 
 var (
-	dataPath = "./data"
-	options  = Options{
+	dataPath   = "./data"
+	optionData = Opt{
 		Vsync:      true,
 		Fullscreen: true,
 		PixelScale: 4,
@@ -41,7 +40,11 @@ var (
 	}
 )
 
-// Ensures that options file exists and is initialized.
+func Options() Opt {
+	return optionData
+}
+
+// InitOptions ensures that optionData file exists and is initialized.
 // If it doesn't exist, create it.
 // If it does exist, load it.
 func InitOptions() {
@@ -63,28 +66,28 @@ func InitOptions() {
 	_, err = os.Stat(engineOptionsPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			log.Info("Creating engine options file", "path", engineOptionsPath)
-			err = options.Save(engineOptionsPath)
+			log.Info("Creating engine optionData file", "path", engineOptionsPath)
+			err = optionData.Save(engineOptionsPath)
 			if err != nil {
-				log.Fatal("Error creating engine options file", "path", engineOptionsPath, "error", err)
+				log.Fatal("Error creating engine optionData file", "path", engineOptionsPath, "error", err)
 			}
 		} else {
-			log.Fatal("Error checking engine options file", "path", engineOptionsPath, "error", err)
+			log.Fatal("Error checking engine optionData file", "path", engineOptionsPath, "error", err)
 		}
 	} else {
-		log.Info("Loading engine options file", "path", engineOptionsPath)
-		err = options.Load(engineOptionsPath)
+		log.Info("Loading engine optionData file", "path", engineOptionsPath)
+		err = optionData.Load(engineOptionsPath)
 		if err != nil {
-			log.Fatal("Error loading engine options file", "path", engineOptionsPath, "error", err)
+			log.Fatal("Error loading engine optionData file", "path", engineOptionsPath, "error", err)
 		}
 	}
 
-    log.SetLevel(options.LogLevel)
+	log.SetLevel(optionData.LogLevel)
 
-    log.Info("Engine options loaded", "options", options)
+	log.Info("Engine optionData loaded", "optionData", optionData)
 }
 
-func (self *Options) Save(path string) error {
+func (self *Opt) Save(path string) error {
 	dat, err := yaml.Marshal(self)
 	if err != nil {
 		return err
@@ -96,7 +99,7 @@ func (self *Options) Save(path string) error {
 	return nil
 }
 
-func (self *Options) Load(path string) error {
+func (self *Opt) Load(path string) error {
 	dat, err := os.ReadFile(path)
 	if err != nil {
 		return err

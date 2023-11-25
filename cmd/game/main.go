@@ -1,22 +1,25 @@
 package main
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/firstperson"
 )
 
 func main() {
-	engine.InitOptions()
-	engine.Start("Bloodmage Engine")
-	defer engine.Stop()
+	core.InitOptions()
+	firstperson.Init()
+	core.Start("Bloodmage Engine")
+	defer core.Stop()
 
-	engine.SetCursorLock(true)
+	core.LockCursor(true)
 
 	// game loop
-	for engine.Running() {
-		engine.MovePlayer()
-		engine.RenderViewport()
+	for core.Running() {
+		firstperson.GetMouseInput()
+		firstperson.MovePlayer()
+		firstperson.RenderViewport()
 
 		// draw frame
-		engine.Present()
+		core.Present()
 	}
 }
