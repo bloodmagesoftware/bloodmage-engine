@@ -5,7 +5,7 @@ go 1.21.2
 require (
 	github.com/charmbracelet/log v0.3.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/veandco/go-sdl2 v0.4.35
+	github.com/veandco/go-sdl2 v0.4.36
 )
 
 require (
