@@ -12,10 +12,12 @@
       alt="Create your own project">
 </a>
 
+## Build tool
+
 [![Selene Project](https://img.shields.io/badge/Selene_Project-2C2D72?logo=lua)](https://github.com/Frank-Mayer/selene)
 
 -   Install dependencies: `selene install`
--   Run: `selene run`
+-   Run game: `selene run`
 -   Build executable: `selene build`
 -   Package for deployment: `selene pack`
 
