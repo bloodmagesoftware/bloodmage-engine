@@ -17,14 +17,16 @@
 package firstperson
 
 import (
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/constants"
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/mathf"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
 	"github.com/charmbracelet/log"
+	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	fov            = mathf.Pi / 3
+	fov            = math32.Pi / 3
 	halfFov        = fov / 2
 	maxDepth int32 = 20
 )
@@ -34,28 +36,18 @@ var (
 	deltaAngle float32
 	scale      int32
 	screenDist float32 = 0.5
-
-	level = [][]byte{
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
-		{1, 0, 1, 1, 1, 0, 0, 0, 0, 1},
-		{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	}
 )
 
 func RenderViewport() {
 	ox := core.P.X
 	oy := core.P.Y
-	xLevel := mathf.Floor(ox)
-	yLevel := mathf.Floor(oy)
+	xLevel := math32.Floor(ox)
+	yLevel := math32.Floor(oy)
 
-	rayAngle := core.P.Angle - halfFov + mathf.Epsilon
+	rayAngle := core.P.Angle - halfFov + constants.Epsilon
 	for ray := int32(0); ray < numOfRays; ray++ {
-		sinA := mathf.Sin(rayAngle)
-		cosA := mathf.Cos(rayAngle)
+		sinA := math32.Sin(rayAngle)
+		cosA := math32.Cos(rayAngle)
 
 		var dy float32
 		var dx float32
@@ -67,7 +59,7 @@ func RenderViewport() {
 			yHor = yLevel + 1
 			dy = 1
 		} else {
-			yHor = yLevel - mathf.Epsilon
+			yHor = yLevel - constants.Epsilon
 			dy = -1
 		}
 		depthHor := (yHor - oy) / sinA
@@ -76,12 +68,9 @@ func RenderViewport() {
 		dx = deltaDepth * cosA
 		var i int32
 		for i = 0; i < maxDepth; i++ {
-			tileX := int(mathf.Floor(xHor))
-			tileY := int(mathf.Floor(yHor))
-			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
-				break
-			}
-			if level[tileY][tileX] != 0 {
+			tileX := int(math32.Floor(xHor))
+			tileY := int(math32.Floor(yHor))
+			if level.Collision(tileX, tileY) {
 				break
 			}
 			xHor += dx
@@ -95,7 +84,7 @@ func RenderViewport() {
 			xVert = xLevel + 1
 			dx = 1
 		} else {
-			xVert = xLevel - mathf.Epsilon
+			xVert = xLevel - constants.Epsilon
 			dx = -1
 		}
 		depthVert := (xVert - ox) / cosA
@@ -103,12 +92,9 @@ func RenderViewport() {
 		deltaDepth = dx / cosA
 		dy = deltaDepth * sinA
 		for i = 0; i < maxDepth; i++ {
-			tileX := int(mathf.Floor(xVert))
-			tileY := int(mathf.Floor(yVert))
-			if tileX < 0 || tileX >= len(level[0]) || tileY < 0 || tileY >= len(level) {
-				break
-			}
-			if level[tileY][tileX] != 0 {
+			tileX := int(math32.Floor(xVert))
+			tileY := int(math32.Floor(yVert))
+			if level.Collision(tileX, tileY) {
 				break
 			}
 			xVert += dx
@@ -125,10 +111,10 @@ func RenderViewport() {
 		}
 
 		// remove fish eye
-		depth *= mathf.Cos(core.P.Angle - rayAngle)
+		depth *= math32.Cos(core.P.Angle - rayAngle)
 
 		// projection
-		projHeight := screenDist / (depth + mathf.Epsilon)
+		projHeight := screenDist / (depth + constants.Epsilon)
 
 		// draw wall
 		rect := sdl.Rect{

@@ -18,7 +18,8 @@ package firstperson
 
 import (
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/mathf"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
+	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 	"math"
 )
@@ -72,21 +73,21 @@ func MovePlayer() {
 	}
 
 	var x, y int
-	xDir := core.P.Speed*mathf.Cos(core.P.Angle) + core.P.Strafe*mathf.Cos(core.P.Angle+math.Pi/2)
+	xDir := core.P.Speed*math32.Cos(core.P.Angle) + core.P.Strafe*math32.Cos(core.P.Angle+math.Pi/2)
 	newX := core.P.X + xDir*core.DeltaTime
 	bufferX := newX + xDir*0.01
-	y = int(mathf.Floor(core.P.Y))
-	x = int(mathf.Floor(bufferX))
-	if x > 0 && x < len(level[y]) && level[y][x] == 0 {
+	y = int(math32.Floor(core.P.Y))
+	x = int(math32.Floor(bufferX))
+	if !level.Collision(x, y) {
 		core.P.X = newX
 	}
 
-	yDir := core.P.Speed*mathf.Sin(core.P.Angle) + core.P.Strafe*mathf.Sin(core.P.Angle+mathf.Pi/2)
+	yDir := core.P.Speed*math32.Sin(core.P.Angle) + core.P.Strafe*math32.Sin(core.P.Angle+math32.Pi/2)
 	newY := core.P.Y + yDir*core.DeltaTime
 	bufferY := newY + yDir*0.01
-	x = int(mathf.Floor(core.P.X))
-	y = int(mathf.Floor(bufferY))
-	if y > 0 && y < len(level) && level[y][x] == 0 {
+	x = int(math32.Floor(core.P.X))
+	y = int(math32.Floor(bufferY))
+	if !level.Collision(x, y) {
 		core.P.Y = newY
 	}
 }
