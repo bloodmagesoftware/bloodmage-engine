@@ -14,8 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     name: Update wiki
     steps:
-      - name: Checkout
+      - name: Checkout source code
         uses: actions/checkout@v4
+        with:
+          path: source
+      - name: Checkout wiki code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{github.repository}}.wiki
+          path: wiki
       - name: Setup Go environment
         uses: actions/setup-go@v4.1.0
         with:
@@ -26,23 +33,21 @@ jobs:
         run: go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
       - name: Generate wiki
         run: |
-          git clone https://github.com/bloodmagesoftware/bloodmage-engine.wiki.git wiki
           rm -rf wiki/*
-          cp README.md wiki/Home.md
-          echo "# Bloodmage Engine" > wiki/_Sidebar.md
+          cd source
+          cp README.md ../wiki/Home.md
+          echo "# Bloodmage Engine" > ../wiki/_Sidebar.md
           for f in internal/engine/*; do
             name=$(basename "$f")
             echo "Generating documentation for $name"
-            gomarkdoc --output "wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/$name"
-            echo "[$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> wiki/_Sidebar.md
+            gomarkdoc --output "../wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/$name"
+            echo "[$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> ../wiki/_Sidebar.md
           done
+          cd ..
       - name: Upload new wiki
         run: |
           cd wiki
-          ls -la
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git config --global user.password "${{ secrets.PAT }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add .
-          git commit -m "Update wiki"
-          git push
+          git diff-index --quiet HEAD || git commit -m "Add changes" && git push
