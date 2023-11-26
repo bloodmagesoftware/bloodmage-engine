@@ -37,7 +37,10 @@ jobs:
             echo "[$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> wiki/_Sidebar.md
           done
       - name: Upload new wiki
-        uses: OrlovM/Wiki-Action@v1
-        with:
-          path: 'wiki'
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd wiki
+          git config user.name "Bloodmage Engine"
+          git config user.email "action@github.com"
+          git add .
+          git commit -m "Update wiki"
+          git push
