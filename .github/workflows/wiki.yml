@@ -39,9 +39,10 @@ jobs:
       - name: Upload new wiki
         run: |
           cd wiki
+          ls -la
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git config --global user.password "${{ secrets.GITHUB_TOKEN }}"
+          git config --global user.password "${{ secrets.PAT }}"
           git add .
           git commit -m "Update wiki"
           git push
