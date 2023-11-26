@@ -19,6 +19,9 @@ func Set(level *Level) {
 
 func Load(path string) (*Level, error) {
 	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
 	level := &Level{}
 	err = proto.Unmarshal(b, level)
 	if err != nil {

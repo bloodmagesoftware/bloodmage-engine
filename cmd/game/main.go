@@ -4,7 +4,7 @@ import (
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/firstperson"
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
-	"log"
+	"github.com/charmbracelet/log"
 )
 
 func main() {
@@ -12,7 +12,8 @@ func main() {
 
 	l, err := level.Load("assets/levels/level1.pb.bin")
 	if err != nil {
-		log.Panicln("Failed to load level", "error", err)
+		log.Error("Failed to load level", "error", err)
+		return
 	}
 	level.Set(l)
 
