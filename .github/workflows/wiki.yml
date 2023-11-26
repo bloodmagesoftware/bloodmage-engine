@@ -1,0 +1,42 @@
+name: Update Wiki
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+    name: Update wiki
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go environment
+        uses: actions/setup-go@v4.1.0
+        with:
+          go-version: ">=1.21.4"
+          cache: true
+          architecture: x64
+      - name: Install gomarkdoc
+        run: go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
+      - name: Generate wiki
+        run: |
+          mkdir wiki
+          cp README.md wiki/Home.md
+          echo "# Bloodmage Engine" > wiki/_Sidebar.md
+          for f in internal/engine/*; do
+            name=$(basename "$f")
+            echo "Generating documentation for $name"
+            gomarkdoc --output "wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/$name"
+            echo "[$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> wiki/_Sidebar.md
+          done
+      - name: Upload new wiki
+        uses: OrlovM/Wiki-Action@v1
+        with:
+          path: 'wiki'
+          token: ${{ secrets.GITHUB_TOKEN }}
