@@ -41,7 +41,7 @@ jobs:
             name=$(basename "$f")
             echo "Generating documentation for $name"
             gomarkdoc --output "../wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/$name"
-            echo "[$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> ../wiki/_Sidebar.md
+            echo "- [$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> ../wiki/_Sidebar.md
           done
           cd ..
       - name: Upload new wiki
