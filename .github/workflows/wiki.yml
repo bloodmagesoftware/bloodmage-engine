@@ -26,7 +26,8 @@ jobs:
         run: go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
       - name: Generate wiki
         run: |
-          mkdir wiki
+          git clone https://github.com/bloodmagesoftware/bloodmage-engine.wiki.git wiki
+          rm -rf wiki/*
           cp README.md wiki/Home.md
           echo "# Bloodmage Engine" > wiki/_Sidebar.md
           for f in internal/engine/*; do
