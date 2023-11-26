@@ -1,29 +1,45 @@
 package level
 
-type Level struct {
-	Collision []uint32
-	Textures  [][]byte
-}
+import (
+	"google.golang.org/protobuf/proto"
+	"os"
+)
 
 var (
-	currentLevelWidth    int   = 1
-	currentLevelWidth32  int32 = 1
-	currentLevelHeight   int   = 1
-	currentLevelHeight32 int32 = 1
-	currentLevel         *Level
+	currentLevelWidth  = 1
+	currentLevelHeight = 1
+	currentLevel       *Level
 )
 
 func Set(level *Level) {
 	currentLevel = level
-	currentLevelHeight = len(level.Textures)
-	for _, row := range level.Textures {
-		rowLen := len(row)
-		if rowLen > currentLevelWidth {
-			currentLevelWidth = rowLen
-		}
+	currentLevelWidth = int(level.Width)
+	currentLevelHeight = int(level.Height)
+}
+
+func Load(path string) (*Level, error) {
+	b, err := os.ReadFile(path)
+	level := &Level{}
+	err = proto.Unmarshal(b, level)
+	if err != nil {
+		return nil, err
 	}
-	currentLevelWidth32 = int32(currentLevelWidth)
-	currentLevelHeight32 = int32(currentLevelHeight)
+
+	return level, nil
+}
+
+func (self *Level) Save(path string) error {
+	b, err := proto.Marshal(self)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(path, b, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Width() int {
@@ -31,7 +47,7 @@ func Width() int {
 }
 
 func Width32() int32 {
-	return currentLevelWidth32
+	return currentLevel.Width
 }
 
 func Height() int {
@@ -39,7 +55,7 @@ func Height() int {
 }
 
 func Height32() int32 {
-	return currentLevelHeight32
+	return currentLevel.Height
 }
 
 func InBounds(x int, y int) bool {
@@ -52,11 +68,4 @@ func Collision(x int, y int) bool {
 	}
 	row := currentLevel.Collision[y]
 	return row&(1<<x) != 0
-}
-
-func Texture(x int, y int) byte {
-	if !InBounds(x, y) {
-		return 0
-	}
-	return currentLevel.Textures[y][x]
 }
