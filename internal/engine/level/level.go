@@ -8,7 +8,14 @@ import (
 var (
 	currentLevelWidth  = 1
 	currentLevelHeight = 1
-	currentLevel       *Level
+	currentLevel       = &Level{
+		Width:           1,
+		Height:          1,
+		Collision:       []byte{0},
+		FloorTextures:   []byte{0},
+		WallTextures:    []byte{0},
+		CeilingTextures: []byte{0},
+	}
 )
 
 func Set(level *Level) {
