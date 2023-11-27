@@ -6,15 +6,15 @@ import (
 )
 
 var (
-	currentLevelWidth  = 1
-	currentLevelHeight = 1
+	currentLevelWidth  = 0
+	currentLevelHeight = 0
 	currentLevel       = &Level{
-		Width:           1,
-		Height:          1,
-		Collision:       []byte{0},
-		FloorTextures:   []byte{0},
-		WallTextures:    []byte{0},
-		CeilingTextures: []byte{0},
+		Width:           0,
+		Height:          0,
+		Collision:       []byte{},
+		FloorTextures:   []byte{},
+		WallTextures:    []byte{},
+		CeilingTextures: []byte{},
 	}
 )
 

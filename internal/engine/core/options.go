@@ -40,8 +40,8 @@ var (
 	}
 )
 
-func Options() Opt {
-	return optionData
+func Options() *Opt {
+	return &optionData
 }
 
 // InitOptions ensures that optionData file exists and is initialized.

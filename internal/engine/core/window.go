@@ -30,10 +30,10 @@ var (
 	DeltaTime      float32
 	bkg            = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 	title          string
-	width          int32 = 800
+	width          int32 = 400
 	widthF               = float32(width)
 	halfWidthF           = widthF / 2
-	height         int32 = 800
+	height         int32 = 300
 	heightF              = float32(height)
 	halfHeightF          = heightF / 2
 	centerX              = width / 2
