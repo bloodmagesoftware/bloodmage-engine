@@ -4,13 +4,7 @@
 
 **This project is still under construction!**
 
-<a
-  href="https://github.com/bloodmagesoftware/bloodmage-engine/fork">
-<img
-      height="24"
-      src="https://img.shields.io/badge/click_here!-to_create_your_own_project-181717?logo=GitHub"
-      alt="Create your own project">
-</a>
+[Create your own project](https://workbench.bloodmagesoftware.dev)
 
 ## Build tool
 
