@@ -1,8 +1,9 @@
 package level
 
 import (
-	"google.golang.org/protobuf/proto"
 	"os"
+
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -52,6 +53,101 @@ func (self *Level) Save(path string) error {
 	return nil
 }
 
+// Enlarge the level to the given width and height.
+// If the level is already larger than the given width and height, this function does nothing.
+// If the level is smaller than the given width and height, the level is enlarged to the given width and height.
+// The new cells are filled with the value 0.
+// The object is modified in place.
+func (self *Level) Enlarge(width int32, height int32) {
+	if width <= self.Width && height <= self.Height {
+		return
+	}
+
+	newWidth := width
+	if width < self.Width {
+		newWidth = self.Width
+	}
+
+	newHeight := height
+	if height < self.Height {
+		newHeight = self.Height
+	}
+
+	newCollision := make([]byte, newWidth*newHeight)
+	newFloorTextures := make([]byte, newWidth*newHeight)
+	newWallTextures := make([]byte, newWidth*newHeight)
+	newCeilingTextures := make([]byte, newWidth*newHeight)
+
+	for x := int32(0); x < newWidth; x++ {
+		for y := int32(0); y < newHeight; y++ {
+			if x < self.Width && y < self.Height {
+				newCollision[y*newWidth+x] = self.Collision[y*self.Width+x]
+				newFloorTextures[y*newWidth+x] = self.FloorTextures[y*self.Width+x]
+				newWallTextures[y*newWidth+x] = self.WallTextures[y*self.Width+x]
+				newCeilingTextures[y*newWidth+x] = self.CeilingTextures[y*self.Width+x]
+			} else {
+				newCollision[y*newWidth+x] = 0
+				newFloorTextures[y*newWidth+x] = 0
+				newWallTextures[y*newWidth+x] = 0
+				newCeilingTextures[y*newWidth+x] = 0
+			}
+		}
+	}
+
+	self.Width = newWidth
+	self.Height = newHeight
+	self.Collision = newCollision
+	self.FloorTextures = newFloorTextures
+	self.WallTextures = newWallTextures
+	self.CeilingTextures = newCeilingTextures
+}
+
+func (self *Level) SaveCollision(x int, y int) bool {
+	if !self.InBounds(x, y) {
+		return true
+	}
+	return self.Collision[y*int(self.Width)+x] == 1
+}
+
+func (self *Level) InBounds(x int, y int) bool {
+    return x >= 0 && x < int(self.Width) && y >= 0 && y < int(self.Height)
+}
+
+func New() *Level {
+	return &Level{
+		Width:  5,
+		Height: 5,
+		Collision: []byte{
+			1, 0, 1, 1, 1,
+			0, 1, 0, 0, 1,
+			1, 0, 1, 0, 1,
+			0, 1, 0, 0, 1,
+			1, 1, 1, 1, 1,
+		},
+		FloorTextures: []byte{
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+		},
+		WallTextures: []byte{
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+		},
+		CeilingTextures: []byte{
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1,
+		},
+	}
+}
+
 func Width() int {
 	return currentLevelWidth
 }
@@ -73,9 +169,16 @@ func InBounds(x int, y int) bool {
 }
 
 func Collision(x int, y int) bool {
+	return currentLevel.SaveCollision(x, y)
+}
+
+func (self *Level) SetCollision(x int, y int, collision bool) {
 	if !InBounds(x, y) {
-		return true
+		self.Enlarge(int32(x+1), int32(y+1))
 	}
-	row := currentLevel.Collision[y]
-	return row&(1<<x) != 0
+	if collision {
+		self.Collision[y*int(self.Width)+x] = 1
+	} else {
+		self.Collision[y*int(self.Width)+x] = 0
+	}
 }
