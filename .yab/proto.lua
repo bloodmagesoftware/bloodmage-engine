@@ -1,4 +1,4 @@
-local proto_files = Selene.find("internal", "**.proto")
+local proto_files = Yab.find("internal", "**.proto")
 
 -- compile proto files
 for _, proto_file in ipairs(proto_files) do

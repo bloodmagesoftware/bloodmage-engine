@@ -3,7 +3,7 @@ local bin_name = pack.bin_name
 
 local exe_name = require("build")
 
-Selene.zip({
+Yab.zip({
 	exe_name,
 	"assets/",
 }, bin_name .. ".zip")

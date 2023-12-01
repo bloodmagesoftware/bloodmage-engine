@@ -1,4 +1,4 @@
-Selene.git_clone_or_pull("https://github.com/exosite/lua-yaml.git", "mod/yaml")
+Yab.git_clone_or_pull("https://github.com/exosite/lua-yaml.git", "mod/yaml")
 
 local function read(file)
 	local f = assert(io.open(file, "r")) -- Open the file in read mode
