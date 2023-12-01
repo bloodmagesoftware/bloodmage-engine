@@ -8,16 +8,17 @@
 
 ## Build tool
 
-[![Selene Project](https://img.shields.io/badge/Selene_Project-2C2D72?logo=lua)](https://github.com/Frank-Mayer/selene)
+[![Yab Project](https://img.shields.io/badge/Yab_Project-2C2D72?logo=lua)](https://github.com/Frank-Mayer/yab)
 
--   Install dependencies: `selene install`
--   Run game: `selene run`
--   Build executable: `selene build`
--   Package for deployment: `selene pack`
+- Install dependencies: `yab install`
+- Run: `yab run`
+- Start Editor `yab edit -- [level path]`
+- Package for deployment: `yab pack`
 
 ## Dependencies
 
--   [github.com/charmbracelet/log](https://pkg.go.dev/github.com/charmbracelet/log)
--   [github.com/chewxy/math32](https://pkg.go.dev/github.com/chewxy/math32)
--   [github.com/go-yaml/yaml](https://pkg.go.dev/github.com/go-yaml/yaml)
--   [github.com/veandco/go-sdl2](https://pkg.go.dev/github.com/veandco/go-sdl2)
+- [github.com/charmbracelet/log](https://pkg.go.dev/github.com/charmbracelet/log)
+- [github.com/chewxy/math32](https://pkg.go.dev/github.com/chewxy/math32)
+- [github.com/go-yaml/yaml](https://pkg.go.dev/github.com/go-yaml/yaml)
+- [github.com/veandco/go-sdl2](https://pkg.go.dev/github.com/veandco/go-sdl2)
+- [google.golang.org/protobuf](https://pkg.go.dev/google.golang.org/protobuf)

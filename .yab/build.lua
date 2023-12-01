@@ -1,6 +1,8 @@
-local pack = require("_pack")
+require("proto")
+
+local pack = require("project")
 local bin_name = pack.bin_name
-if Selene.os_type() == "windows" then
+if Yab.os_type() == "windows" then
 	bin_name = bin_name .. ".exe"
 end
 
