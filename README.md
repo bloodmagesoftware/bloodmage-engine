@@ -4,19 +4,15 @@
 
 **This project is still under construction!**
 
-<a
-  href="https://github.com/bloodmagesoftware/bloodmage-engine/fork">
-<img
-      height="24"
-      src="https://img.shields.io/badge/click_here!-to_create_your_own_project-181717?logo=GitHub"
-      alt="Create your own project">
-</a>
+[Create your own project](https://workbench.bloodmagesoftware.dev)
+
+## Build tool
 
 [![Yab Project](https://img.shields.io/badge/Yab_Project-2C2D72?logo=lua)](https://github.com/Frank-Mayer/yab)
 
 - Install dependencies: `yab install`
 - Run: `yab run`
-- Build executable: `yab build`
+- Start Editor `yab edit -- [level path]`
 - Package for deployment: `yab pack`
 
 ## Dependencies
@@ -26,4 +22,3 @@
 - [github.com/go-yaml/yaml](https://pkg.go.dev/github.com/go-yaml/yaml)
 - [github.com/veandco/go-sdl2](https://pkg.go.dev/github.com/veandco/go-sdl2)
 - [google.golang.org/protobuf](https://pkg.go.dev/google.golang.org/protobuf)
-

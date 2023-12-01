@@ -47,54 +47,69 @@ var (
 	onResize       *func() = nil
 )
 
+// Width returns the window width as an int32.
 func Width() int32 {
 	return width
 }
 
+// WidthF returns the window width as a float32.
 func WidthF() float32 {
 	return widthF
 }
 
+// HalfWidthF returns half of the window width as a float32.
 func HalfWidthF() float32 {
 	return halfWidthF
 }
 
+// Height returns the window height as an int32.
 func Height() int32 {
 	return height
 }
 
+// HeightF returns the window height as a float32.
 func HeightF() float32 {
 	return heightF
 }
 
+// HalfHeightF returns half of the window height as a float32.
 func HalfHeightF() float32 {
 	return halfHeightF
 }
 
+// CenterX returns the center of the window on the X axis.
+// This is equal to Width() / 2.
 func CenterX() int32 {
 	return centerX
 }
 
+// CenterY returns the center of the window on the Y axis.
+// This is equal to Height() / 2.
 func CenterY() int32 {
 	return centerY
 }
 
+// Renderer returns the SDL renderer.
 func Renderer() *sdl.Renderer {
 	return renderer
 }
 
+// Window returns the SDL window.
 func Window() *sdl.Window {
 	return window
 }
 
+// KeyStates returns a snapshot of the current state of the keyboard. <https://wiki.libsdl.org/SDL_GetKeyboardState>
 func KeyStates() []uint8 {
 	return keyStates
 }
 
+// IsCursorLocked returns whether the cursor is locked to the window or not.
 func IsCursorLocked() bool {
 	return cursorLocked
 }
 
+// LockCursor sets whether the cursor should be locked to the window or not.
 func LockCursor(lock bool) {
 	cursorLocked = lock
 	if cursorLocked {
@@ -117,10 +132,13 @@ func LockCursor(lock bool) {
 	}
 }
 
+// OnResize sets the function to be called when the window is resized.
+// This is for the game modes like firstperson, topdown, etc.
 func OnResize(f *func()) {
 	onResize = f
 }
 
+// Start initializes the window and renderer.
 func Start(t string) {
 	if window != nil {
 		log.Fatal("window already started")
@@ -172,6 +190,8 @@ func updateWindowSize() {
 	}
 }
 
+// Stop destroys the window and renderer.
+// Call this after the game loop has exited.
 func Stop() {
 	running = false
 	_ = window.Destroy()
@@ -188,6 +208,8 @@ func beginRender() {
 	}
 }
 
+// Running returns whether the game loop should continue or not.
+// Use this to determine when to exit the game loop.
 func Running() bool {
 	now := sdl.GetTicks64()
 	DeltaTime = float32(now-frameStartTime) / 1000.0
@@ -210,6 +232,8 @@ func eventLoop() {
 	}
 }
 
+// Present draws the frame to the screen.
+// Call this at the very end of the game loop.
 func Present() {
 	renderer.Present()
 	frameTime := uint32(sdl.GetTicks64() - frameStartTime)
