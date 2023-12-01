@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/wiki.yml"
 
 permissions:
   contents: write
@@ -34,6 +39,7 @@ jobs:
       - name: Generate wiki
         run: |
           rm -rf wiki/*
+          echo "Generated $(date)" > wiki/_Footer.md
           cd source
           cp README.md ../wiki/Home.md
           echo "# Bloodmage Engine" > ../wiki/_Sidebar.md
