@@ -43,10 +43,10 @@ jobs:
           cd source
           cp README.md ../wiki/Home.md
           echo "# Bloodmage Engine" > ../wiki/_Sidebar.md
-          for f in internal/engine/*; do
+          for f in pkg/engine/*; do
             name=$(basename "$f")
             echo "Generating documentation for $name"
-            gomarkdoc --output "../wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/$name"
+            gomarkdoc --output "../wiki/$name.md" "github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/$name"
             echo "- [$name](${{ github.server_url }}/${{ github.repository }}/wiki/$name)" >> ../wiki/_Sidebar.md
           done
           cd ..
