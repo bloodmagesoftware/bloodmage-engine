@@ -201,11 +201,11 @@ func Collision(x int, y int) bool {
 	return currentLevel.SaveCollision(x, y)
 }
 
-const round = 0.4921875
+var CollisionRound = float32(0.4921875)
 
 func CollisionF(x float32, y float32) bool {
-    for y1 := int(y - round); y1 <= int(y+round); y1++ {
-        for x1 := int(x - round); x1 <= int(x+round); x1++ {
+    for y1 := int(y - CollisionRound); y1 <= int(y+CollisionRound); y1++ {
+        for x1 := int(x - CollisionRound); x1 <= int(x+CollisionRound); x1++ {
             if Collision(x1, y1) {
                 return true
             }

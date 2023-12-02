@@ -57,37 +57,37 @@ func MovePlayer() {
 	core.P.Angle += float32(MouseDeltaX) * turnSpeed * core.DeltaTime
 
 	if KeyDown(KeyForward) {
-		core.P.Speed = speed
+		core.P.Speed = 1
 	} else if KeyDown(KeyBack) {
-		core.P.Speed = -speed
+		core.P.Speed = -1
 	} else {
 		core.P.Speed = 0
 	}
 
 	if KeyDown(KeyLeft) {
-		core.P.Strafe = -speed
+		core.P.Strafe = -1
 	} else if KeyDown(KeyRight) {
-		core.P.Strafe = speed
+		core.P.Strafe = 1
 	} else {
 		core.P.Strafe = 0
 	}
 
-	var x, y int
 	xDir := core.P.Speed*math32.Cos(core.P.Angle) + core.P.Strafe*math32.Cos(core.P.Angle+math.Pi/2)
-	newX := core.P.X + xDir*core.DeltaTime
-	bufferX := newX + xDir*0.01
-	y = int(math32.Floor(core.P.Y))
-	x = int(math32.Floor(bufferX))
-	if !level.Collision(x, y) {
-		core.P.X = newX
-	}
+    yDir := core.P.Speed*math32.Sin(core.P.Angle) + core.P.Strafe*math32.Sin(core.P.Angle+math32.Pi/2)
+    length := math32.Sqrt(xDir*xDir + yDir*yDir)
+    if length == 0 {
+        return
+    }
+    xDir /= length
+    yDir /= length
 
-	yDir := core.P.Speed*math32.Sin(core.P.Angle) + core.P.Strafe*math32.Sin(core.P.Angle+math32.Pi/2)
-	newY := core.P.Y + yDir*core.DeltaTime
-	bufferY := newY + yDir*0.01
-	x = int(math32.Floor(core.P.X))
-	y = int(math32.Floor(bufferY))
-	if !level.Collision(x, y) {
-		core.P.Y = newY
-	}
+	newX := core.P.X + xDir*core.DeltaTime * speed
+    newY := core.P.Y + yDir*core.DeltaTime * speed
+
+    if !level.Collision(int(newX), int(core.P.Y)) {
+        core.P.X = newX
+    }
+    if !level.Collision(int(core.P.X), int(newY)) {
+        core.P.Y = newY
+    }
 }

@@ -18,11 +18,13 @@ package firstperson
 
 import (
 	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
 	"github.com/charmbracelet/log"
 	"github.com/chewxy/math32"
 )
 
 func Init() {
+    level.CollisionRound = 0.125
 	f := func() {
 		log.Debug("firstperson window resize")
 		screenDist = core.HalfWidthF() / math32.Tan(halfFov)
