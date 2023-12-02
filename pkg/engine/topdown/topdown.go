@@ -14,23 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package firstperson
+package topdown
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
 	"github.com/charmbracelet/log"
-	"github.com/chewxy/math32"
 )
 
 func Init() {
-    level.CollisionRound = 0.125
 	f := func() {
-		log.Debug("firstperson window resize")
-		screenDist = core.HalfWidthF() / math32.Tan(halfFov)
-		numOfRays = core.Width() / core.Options().PixelScale
-		deltaAngle = fov / (core.WidthF() / float32(core.Options().PixelScale))
-		scale = core.Width() / numOfRays
+		log.Debug("topdown window resize")
 	}
 	core.OnResize(&f)
 }

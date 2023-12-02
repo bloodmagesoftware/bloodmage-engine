@@ -9,14 +9,14 @@ import (
 func main() {
 	core.InitOptions()
 
-	l, err := level.Load("assets/levels/level1.bmlvl")
-	if err != nil {
-		panic(err)
-	}
+	l := level.New()
 	level.Set(l)
 
+	core.P.X = 1.5
+	core.P.Y = 1.5
+
 	firstperson.Init()
-	core.Start("Bloodmage Engine")
+	core.Start("First Person Example")
 	defer core.Stop()
 
 	core.LockCursor(true)

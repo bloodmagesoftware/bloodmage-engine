@@ -1,14 +1,14 @@
 package topdown
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
 	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-    velocity = 2
+	velocity = 2
 )
 
 func ProcessInput() {

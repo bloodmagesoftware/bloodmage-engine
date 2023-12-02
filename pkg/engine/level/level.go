@@ -71,8 +71,8 @@ func (self *Level) Save(path string) error {
 			return err
 		}
 	} else if err != nil {
-        return err
-    }
+		return err
+	}
 
 	err = os.WriteFile(path, b, 0644)
 	if err != nil {
@@ -148,9 +148,9 @@ func New() *Level {
 		Height: 5,
 		Collision: []byte{
 			1, 1, 1, 1, 1,
-			0, 0, 0, 0, 1,
-			1, 0, 0, 0, 0,
-			0, 0, 0, 0, 1,
+			1, 0, 0, 0, 1,
+			1, 0, 0, 0, 1,
+			1, 0, 0, 0, 1,
 			1, 1, 1, 1, 1,
 		},
 		FloorTextures: []byte{
@@ -204,14 +204,14 @@ func Collision(x int, y int) bool {
 var CollisionRound = float32(0.4921875)
 
 func CollisionF(x float32, y float32) bool {
-    for y1 := int(y - CollisionRound); y1 <= int(y+CollisionRound); y1++ {
-        for x1 := int(x - CollisionRound); x1 <= int(x+CollisionRound); x1++ {
-            if Collision(x1, y1) {
-                return true
-            }
-        }
-    }
-    return false
+	for y1 := int(y - CollisionRound); y1 <= int(y+CollisionRound); y1++ {
+		for x1 := int(x - CollisionRound); x1 <= int(x+CollisionRound); x1++ {
+			if Collision(x1, y1) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (self *Level) SetCollision(x int, y int, collision bool) {

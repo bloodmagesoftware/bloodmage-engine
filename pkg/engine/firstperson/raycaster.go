@@ -17,9 +17,9 @@
 package firstperson
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/constants"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/constants"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
 	"github.com/charmbracelet/log"
 	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"

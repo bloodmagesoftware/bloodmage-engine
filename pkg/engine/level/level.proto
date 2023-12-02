@@ -16,7 +16,7 @@
 
 syntax = "proto3";
 
-option go_package = "github.com/bloodmagesoftware/bloodmage-engine/internal/engine/level";
+option go_package = "github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level";
 
 message Level {
   int32 width = 1;
