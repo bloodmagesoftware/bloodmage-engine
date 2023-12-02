@@ -12,11 +12,10 @@ import (
 )
 
 var (
-	mouseX     int32
-	mouseY     int32
-	mouseState uint32
-	posX       int32
-	posY       int32
+	mouseX int32
+	mouseY int32
+	posX   int32
+	posY   int32
 )
 
 func main() {
@@ -29,7 +28,7 @@ func main() {
 		log.Fatal("No level file provided")
 	}
 
-	levelFile := path.Join("assets", *levelParam)
+	levelFile := path.Clean(*levelParam)
 
 	var l *level.Level
 	var err error
@@ -132,5 +131,7 @@ func main() {
 	err = l.Save(levelFile)
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		log.Info("Saved level to " + levelFile)
 	}
 }

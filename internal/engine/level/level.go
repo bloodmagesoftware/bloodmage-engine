@@ -18,6 +18,7 @@ package level
 
 import (
 	"os"
+	"path/filepath"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -60,6 +61,18 @@ func (self *Level) Save(path string) error {
 	if err != nil {
 		return err
 	}
+
+	// ensure directory exists
+	dir := filepath.Dir(path)
+	_, err = os.Stat(dir)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return err
+		}
+	} else if err != nil {
+        return err
+    }
 
 	err = os.WriteFile(path, b, 0644)
 	if err != nil {
@@ -126,7 +139,7 @@ func (self *Level) SaveCollision(x int, y int) bool {
 }
 
 func (self *Level) InBounds(x int, y int) bool {
-    return x >= 0 && x < int(self.Width) && y >= 0 && y < int(self.Height)
+	return x >= 0 && x < int(self.Width) && y >= 0 && y < int(self.Height)
 }
 
 func New() *Level {
@@ -134,10 +147,10 @@ func New() *Level {
 		Width:  5,
 		Height: 5,
 		Collision: []byte{
-			1, 0, 1, 1, 1,
-			0, 1, 0, 0, 1,
-			1, 0, 1, 0, 1,
-			0, 1, 0, 0, 1,
+			1, 1, 1, 1, 1,
+			0, 0, 0, 0, 1,
+			1, 0, 0, 0, 0,
+			0, 0, 0, 0, 1,
 			1, 1, 1, 1, 1,
 		},
 		FloorTextures: []byte{
@@ -186,6 +199,19 @@ func InBounds(x int, y int) bool {
 
 func Collision(x int, y int) bool {
 	return currentLevel.SaveCollision(x, y)
+}
+
+const round = 0.4921875
+
+func CollisionF(x float32, y float32) bool {
+    for y1 := int(y - round); y1 <= int(y+round); y1++ {
+        for x1 := int(x - round); x1 <= int(x+round); x1++ {
+            if Collision(x1, y1) {
+                return true
+            }
+        }
+    }
+    return false
 }
 
 func (self *Level) SetCollision(x int, y int, collision bool) {
