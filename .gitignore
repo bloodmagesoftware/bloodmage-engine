@@ -8,9 +8,6 @@
 *.so
 *.dylib
 
-# Protocol buffer output
-*.pb.go
-
 # Test binary, built with `go test -c`
 *.test
 
