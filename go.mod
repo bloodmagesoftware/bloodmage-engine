@@ -7,7 +7,7 @@ require (
 	github.com/chewxy/math32 v1.10.1
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/veandco/go-sdl2 v0.4.36
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.32.0
 )
 
 require (
