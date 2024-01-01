@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/log v0.3.1
 	github.com/chewxy/math32 v1.10.1
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/veandco/go-sdl2 v0.4.36
+	github.com/veandco/go-sdl2 v0.4.37
 	google.golang.org/protobuf v1.32.0
 )
 
