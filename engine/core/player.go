@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-syntax = "proto3";
+package core
 
-option go_package = "github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level";
-
-message Level {
-  int32 width = 1;
-  int32 height = 2;
-  bytes collision = 3;
-  bytes floor_textures = 4;
-  bytes wall_textures = 5;
-  bytes ceiling_textures = 6;
+type player struct {
+	X      float32
+	Y      float32
+	Angle  float32
+	Speed  float32
+	Strafe float32
 }
+
+var (
+	P = player{2, 1.5, 0, 0, 0}
+)

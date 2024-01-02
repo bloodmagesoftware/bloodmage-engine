@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -154,11 +155,11 @@ func New() *Level {
 			1, 1, 1, 1, 1,
 		},
 		FloorTextures: []byte{
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
 		},
 		WallTextures: []byte{
 			1, 1, 1, 1, 1,
@@ -169,10 +170,10 @@ func New() *Level {
 		},
 		CeilingTextures: []byte{
 			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
+			0, 0, 1, 1, 1,
+			1, 1, 1, 0, 1,
+			1, 1, 1, 0, 1,
+			1, 0, 0, 0, 1,
 		},
 	}
 }
@@ -223,4 +224,37 @@ func (self *Level) SetCollision(x int, y int, collision bool) {
 	} else {
 		self.Collision[y*int(self.Width)+x] = 0
 	}
+}
+
+func (self *Level) WallTexture(x int, y int) *textures.Texture {
+	if !InBounds(x, y) {
+		return textures.DefaultTexture()
+	}
+	return textures.Get(textures.Key(self.WallTextures[y*int(self.Width)+x]))
+}
+
+func WallTexture(x int, y int) *textures.Texture {
+	return currentLevel.WallTexture(x, y)
+}
+
+func (self *Level) FloorTexture(x int, y int) *textures.Texture {
+	if !InBounds(x, y) {
+		return textures.DefaultTexture()
+	}
+	return textures.Get(textures.Key(self.FloorTextures[y*int(self.Width)+x]))
+}
+
+func FloorTexture(x int, y int) *textures.Texture {
+	return currentLevel.FloorTexture(x, y)
+}
+
+func (self *Level) CeilingTexture(x int, y int) *textures.Texture {
+	if !InBounds(x, y) {
+		return textures.DefaultTexture()
+	}
+	return textures.Get(textures.Key(self.CeilingTextures[y*int(self.Width)+x]))
+}
+
+func CeilingTexture(x int, y int) *textures.Texture {
+	return currentLevel.CeilingTexture(x, y)
 }

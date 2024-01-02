@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,8 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package constants
+package topdown
 
-const (
-	Epsilon float32 = 1e-6
+import (
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/charmbracelet/log"
 )
+
+func Init() {
+	f := func() {
+		log.Debug("topdown window resize")
+	}
+	core.OnResize(&f)
+}

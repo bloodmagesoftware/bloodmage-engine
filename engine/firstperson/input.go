@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 package firstperson
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
 	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 	"math"

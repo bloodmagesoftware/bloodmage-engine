@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,23 +14,46 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
-package firstperson
+package textures
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
-	"github.com/charmbracelet/log"
-	"github.com/chewxy/math32"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
-func Init() {
-	level.CollisionRound = 0.125
-	f := func() {
-		log.Debug("firstperson window resize")
-		screenDist = core.HalfWidthF() / math32.Tan(halfFov)
-		numOfRays = core.Width() / core.Options().PixelScale
-		deltaAngle = fov / (core.WidthF() / float32(core.Options().PixelScale))
-		scale = core.Width() / numOfRays
+func (t *Texture) load() error {
+	if t.texture != nil {
+		return nil
 	}
-	core.OnResize(&f)
+
+	surface, err := sdl.LoadBMP(t.path)
+	if err != nil {
+		return err
+	}
+	t.texture, err = core.Renderer().CreateTextureFromSurface(surface)
+	if err != nil {
+		return err
+	}
+	t.height = surface.H
+	t.width = surface.W
+	surface.Free()
+
+	return nil
+}
+
+func (t *Texture) unload() error {
+	if t.texture != nil {
+		err := t.texture.Destroy()
+		if err != nil {
+			return err
+		}
+		t.texture = nil
+	}
+
+	return nil
+}
+
+func (t *Texture) Texture() (*sdl.Texture, error) {
+	err := t.load()
+	return t.texture, err
 }
