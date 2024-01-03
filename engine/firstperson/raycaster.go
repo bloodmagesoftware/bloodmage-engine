@@ -60,6 +60,35 @@ func RenderViewport() error {
 }
 
 func renderFloor() error {
+	// imaginary plane destance is 1
+
+	// height of the player's eyes
+	camZ := core.HalfWidthF()
+
+	// vertical position of the pixel on the screen relative to the center
+	var rowY float32
+
+	texure := level.FloorTexture(0, 0)
+	renderColor, err := texure.Texture()
+	if err != nil {
+		return err
+	}
+
+	srcRect := sdl.Rect{W: texure.Width(), H: 1}
+	dstRect := sdl.Rect{W: core.Width(), H: 1}
+
+	for rowY = float32(0); rowY < camZ; rowY++ {
+		// 1 / rowY = rowDist / camZ
+		rowDist := camZ / rowY
+
+		srcRect.Y = int32(math32.Mod(rowDist, 1) * float32(texure.Height()))
+		dstRect.Y = int32(core.HalfHeightF() + rowY)
+
+		err = core.Renderer().Copy(renderColor, &srcRect, &dstRect)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
