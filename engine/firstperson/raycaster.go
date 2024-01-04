@@ -42,6 +42,13 @@ var (
 
 func RenderViewport() error {
 	var err error
+	err = renderCeiling()
+	if err != nil {
+		return errors.Join(
+			errors.New("failed to render ceiling"),
+			err,
+		)
+	}
 	err = renderFloor()
 	if err != nil {
 		return errors.Join(
@@ -60,7 +67,27 @@ func RenderViewport() error {
 }
 
 func renderFloor() error {
-	return nil
+	renderColor := level.FloorTexture()
+
+	dstRect := sdl.Rect{
+		X: 0, Y: int32(core.HalfHeightF()),
+		W: int32(core.Width()), H: int32(core.HalfHeightF()),
+	}
+
+	err := core.Renderer().Copy(renderColor, nil, &dstRect)
+	return err
+}
+
+func renderCeiling() error {
+	renderColor := level.CeilingTexture()
+
+	dstRect := sdl.Rect{
+		X: 0, Y: 0,
+		W: int32(core.Width()), H: int32(core.HalfHeightF()),
+	}
+
+	err := core.Renderer().Copy(renderColor, nil, &dstRect)
+	return err
 }
 
 func renderWalls() error {

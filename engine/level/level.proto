@@ -21,8 +21,7 @@ option go_package = "github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/le
 message Level {
   int32 width = 1;
   int32 height = 2;
-  bytes collision = 3;
-  bytes floor_textures = 4;
-  bytes wall_textures = 5;
-  bytes ceiling_textures = 6;
+  uint32 floor = 3;
+  uint32 ceiling = 4;
+  bytes walls = 5;
 }

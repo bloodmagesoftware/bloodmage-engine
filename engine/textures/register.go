@@ -28,6 +28,8 @@ var (
 	registry = make(map[Key]*Texture)
 	// default texture for missing textures
 	defaultTexture *Texture
+	// color textures
+	colorTextures = make([]*sdl.Texture, 0xffffff)
 )
 
 func Register(texturepath string, key Key) *Texture {
@@ -76,4 +78,34 @@ func DefaultTexture() *Texture {
 	}
 
 	return defaultTexture
+}
+func Color(c uint32) (*sdl.Texture, error) {
+	if c >= 0xffffff {
+		t, err := DefaultTexture().Texture()
+		if err != nil {
+			return nil, err
+		}
+		return t, nil
+	}
+	if colorTextures[c] != nil {
+		return colorTextures[c], nil
+	}
+	s, err := sdl.CreateRGBSurface(0, 1, 1, 32, 0, 0, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	s.Set(0, 0, color.RGBA{
+		R: uint8(c >> 16),
+		G: uint8(c >> 8),
+		B: uint8(c),
+		A: 255,
+	})
+	t, err := core.Renderer().CreateTextureFromSurface(s)
+	if err != nil {
+		return nil, err
+	}
+	s.Free()
+
+	colorTextures[c] = t
+	return t, nil
 }

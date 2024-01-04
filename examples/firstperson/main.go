@@ -13,7 +13,7 @@ func main() {
 
 	l := level.New()
 	level.Set(l)
-	textures.Register("assets/textures/0.bmp", 0)
+	textures.Register("assets/textures/2.bmp", 2)
 	textures.Register("assets/textures/1.bmp", 1)
 
 	core.P.X = 1.5
