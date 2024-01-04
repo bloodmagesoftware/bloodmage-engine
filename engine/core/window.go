@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@ var (
 	DeltaTime      float32
 	bkg            = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 	title          string
-	width          int32 = 400
+	width          int32 = 1280
 	widthF               = float32(width)
 	halfWidthF           = widthF / 2
-	height         int32 = 300
+	height         int32 = 720
 	heightF              = float32(height)
 	halfHeightF          = heightF / 2
 	centerX              = width / 2
@@ -143,16 +143,39 @@ func Start(t string) {
 	if window != nil {
 		log.Fatal("window already started")
 	}
-	title = t
-	sdl.SetHint(sdl.HINT_RENDER_SCALE_QUALITY, "0")
+
 	var err error
+
+	title = t
+
+	sdl.SetHint(sdl.HINT_RENDER_SCALE_QUALITY, "0")
 	err = sdl.Init(sdl.INIT_EVERYTHING)
 	if err != nil {
 		log.Fatal(err)
 	}
-	windowFlags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
+
+	dimension, err := sdl.GetDisplayBounds(0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	width = dimension.W
+	widthF = float32(width)
+	halfWidthF = widthF / 2
+	centerX = width / 2
+	height = dimension.H
+	heightF = float32(height)
+	halfHeightF = heightF / 2
+	centerY = height / 2
+
+	var windowFlags uint32
 	if optionData.Fullscreen {
-		windowFlags |= sdl.WINDOW_FULLSCREEN
+		if optionData.WindowedFullscreen {
+			windowFlags = uint32(sdl.WINDOW_SHOWN)
+		} else {
+			windowFlags = uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_FULLSCREEN_DESKTOP)
+		}
+	} else {
+		windowFlags = uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
 	}
 	window, err = sdl.CreateWindow(
 		title,
@@ -162,12 +185,22 @@ func Start(t string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if optionData.WindowedFullscreen {
+		window.SetBordered(false)
+		window.SetResizable(false)
+		window.SetPosition(dimension.X, dimension.Y)
+		window.SetSize(dimension.W, dimension.H)
+	}
 
 	rendererFlags := uint32(sdl.RENDERER_ACCELERATED)
 	if optionData.Vsync {
 		rendererFlags |= sdl.RENDERER_PRESENTVSYNC
 	}
 	renderer, err = sdl.CreateRenderer(window, -1, rendererFlags)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
 	if err != nil {
 		log.Fatal(err)
 	}

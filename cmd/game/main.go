@@ -1,9 +1,11 @@
+// The main game
 package main
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/firstperson"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/firstperson"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
+	"github.com/charmbracelet/log"
 )
 
 func main() {
@@ -25,7 +27,10 @@ func main() {
 	for core.Running() {
 		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
-		firstperson.RenderViewport()
+		err = firstperson.RenderViewport()
+		if err != nil {
+			log.Error(err)
+		}
 
 		// draw frame
 		core.Present()

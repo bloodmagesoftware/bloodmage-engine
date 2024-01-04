@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,10 +17,12 @@
 package firstperson
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/constants"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
-	"github.com/charmbracelet/log"
+	"errors"
+
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/constants"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
 	"github.com/chewxy/math32"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -38,7 +40,60 @@ var (
 	screenDist float32 = 0.5
 )
 
-func RenderViewport() {
+func RenderViewport() error {
+	var err error
+	err = renderCeiling()
+	if err != nil {
+		return errors.Join(
+			errors.New("failed to render ceiling"),
+			err,
+		)
+	}
+	err = renderFloor()
+	if err != nil {
+		return errors.Join(
+			errors.New("failed to render floor"),
+			err,
+		)
+	}
+	err = renderWalls()
+	if err != nil {
+		return errors.Join(
+			errors.New("failed to render walls"),
+			err,
+		)
+	}
+	return nil
+}
+
+func renderFloor() error {
+	renderColor := level.FloorTexture()
+
+	dstRect := sdl.Rect{
+		X: 0, Y: int32(core.HalfHeightF()),
+		W: int32(core.Width()), H: int32(core.HalfHeightF()),
+	}
+
+	err := core.Renderer().Copy(renderColor, nil, &dstRect)
+	return err
+}
+
+func renderCeiling() error {
+	renderColor := level.CeilingTexture()
+
+	dstRect := sdl.Rect{
+		X: 0, Y: 0,
+		W: int32(core.Width()), H: int32(core.HalfHeightF()),
+	}
+
+	err := core.Renderer().Copy(renderColor, nil, &dstRect)
+	return err
+}
+
+func renderWalls() error {
+	var err error
+	var renderColor *sdl.Texture
+
 	ox := core.P.X
 	oy := core.P.Y
 	xLevel := math32.Floor(ox)
@@ -48,6 +103,8 @@ func RenderViewport() {
 	for ray := int32(0); ray < numOfRays; ray++ {
 		sinA := math32.Sin(rayAngle)
 		cosA := math32.Cos(rayAngle)
+		var textureHor *textures.Texture
+		var textureVert *textures.Texture
 
 		var dy float32
 		var dx float32
@@ -71,6 +128,7 @@ func RenderViewport() {
 			tileX := int(math32.Floor(xHor))
 			tileY := int(math32.Floor(yHor))
 			if level.Collision(tileX, tileY) {
+				textureHor = level.WallTexture(tileX, tileY)
 				break
 			}
 			xHor += dx
@@ -95,6 +153,7 @@ func RenderViewport() {
 			tileX := int(math32.Floor(xVert))
 			tileY := int(math32.Floor(yVert))
 			if level.Collision(tileX, tileY) {
+				textureVert = level.WallTexture(tileX, tileY)
 				break
 			}
 			xVert += dx
@@ -104,10 +163,26 @@ func RenderViewport() {
 
 		// depth
 		var depth float32
+		var texture *textures.Texture
+		var offset float32
 		if depthHor < depthVert {
 			depth = depthHor
+			texture = textureHor
+			xHor = math32.Mod(xHor, 1)
+			if sinA > 0 {
+				offset = 1 - xHor
+			} else {
+				offset = xHor
+			}
 		} else {
 			depth = depthVert
+			texture = textureVert
+			yVert = math32.Mod(yVert, 1)
+			if cosA > 0 {
+				offset = yVert
+			} else {
+				offset = 1 - yVert
+			}
 		}
 
 		// remove fish eye
@@ -117,23 +192,37 @@ func RenderViewport() {
 		projHeight := screenDist / (depth + constants.Epsilon)
 
 		// draw wall
-		rect := sdl.Rect{
+		dstRect := sdl.Rect{
 			X: ray * scale, Y: int32(core.HalfHeightF() - projHeight/2),
 			W: scale, H: int32(projHeight),
 		}
-		// distant walls are darker
-		darkness := uint8(255 / (depth + 1))
-		err := core.Renderer().SetDrawColor(darkness, darkness, darkness, 255)
-		if err != nil {
-			log.Error(err)
-			return
+		srcRect := sdl.Rect{
+			X: int32(offset * float32(texture.Width())),
+			Y: 0,
+			W: 1,
+			H: int32(texture.Height()),
 		}
-		err = core.Renderer().FillRect(&rect)
+		renderColor, err = texture.Texture()
 		if err != nil {
-			log.Error(err)
-			return
+			return err
+		}
+		err = core.Renderer().Copy(renderColor, &srcRect, &dstRect)
+		if err != nil {
+			return err
+		}
+		// distant walls are darker
+		darkness := uint8(int32((depth+1)*255) / maxDepth)
+		err = core.Renderer().SetDrawColor(0, 0, 0, darkness)
+		if err != nil {
+			return err
+		}
+		err = core.Renderer().FillRect(&dstRect)
+		if err != nil {
+			return err
 		}
 
 		rayAngle += deltaAngle
 	}
+
+	return nil
 }

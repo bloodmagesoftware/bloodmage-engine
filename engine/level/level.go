@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
+	"github.com/veandco/go-sdl2/sdl"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -27,12 +29,11 @@ var (
 	currentLevelWidth  = 0
 	currentLevelHeight = 0
 	currentLevel       = &Level{
-		Width:           0,
-		Height:          0,
-		Collision:       []byte{},
-		FloorTextures:   []byte{},
-		WallTextures:    []byte{},
-		CeilingTextures: []byte{},
+		Width:   0,
+		Height:  0,
+		Floor:   0,
+		Ceiling: 0,
+		Walls:   []byte{},
 	}
 )
 
@@ -102,40 +103,28 @@ func (self *Level) Enlarge(width int32, height int32) {
 		newHeight = self.Height
 	}
 
-	newCollision := make([]byte, newWidth*newHeight)
-	newFloorTextures := make([]byte, newWidth*newHeight)
-	newWallTextures := make([]byte, newWidth*newHeight)
-	newCeilingTextures := make([]byte, newWidth*newHeight)
+	newWalls := make([]byte, newWidth*newHeight)
 
 	for x := int32(0); x < newWidth; x++ {
 		for y := int32(0); y < newHeight; y++ {
 			if x < self.Width && y < self.Height {
-				newCollision[y*newWidth+x] = self.Collision[y*self.Width+x]
-				newFloorTextures[y*newWidth+x] = self.FloorTextures[y*self.Width+x]
-				newWallTextures[y*newWidth+x] = self.WallTextures[y*self.Width+x]
-				newCeilingTextures[y*newWidth+x] = self.CeilingTextures[y*self.Width+x]
+				newWalls[y*newWidth+x] = self.Walls[y*self.Width+x]
 			} else {
-				newCollision[y*newWidth+x] = 0
-				newFloorTextures[y*newWidth+x] = 0
-				newWallTextures[y*newWidth+x] = 0
-				newCeilingTextures[y*newWidth+x] = 0
+				newWalls[y*newWidth+x] = 0
 			}
 		}
 	}
 
 	self.Width = newWidth
 	self.Height = newHeight
-	self.Collision = newCollision
-	self.FloorTextures = newFloorTextures
-	self.WallTextures = newWallTextures
-	self.CeilingTextures = newCeilingTextures
+	self.Walls = newWalls
 }
 
 func (self *Level) SaveCollision(x int, y int) bool {
 	if !self.InBounds(x, y) {
 		return true
 	}
-	return self.Collision[y*int(self.Width)+x] == 1
+	return self.Walls[y*int(self.Width)+x] != 0
 }
 
 func (self *Level) InBounds(x int, y int) bool {
@@ -146,34 +135,15 @@ func New() *Level {
 	return &Level{
 		Width:  5,
 		Height: 5,
-		Collision: []byte{
+		Walls: []byte{
 			1, 1, 1, 1, 1,
+			1, 0, 0, 0, 2,
+			1, 0, 0, 0, 2,
 			1, 0, 0, 0, 1,
-			1, 0, 0, 0, 1,
-			1, 0, 0, 0, 1,
 			1, 1, 1, 1, 1,
 		},
-		FloorTextures: []byte{
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-		},
-		WallTextures: []byte{
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-		},
-		CeilingTextures: []byte{
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1,
-		},
+		Floor:   0x102030,
+		Ceiling: 0x301020,
 	}
 }
 
@@ -214,13 +184,43 @@ func CollisionF(x float32, y float32) bool {
 	return false
 }
 
-func (self *Level) SetCollision(x int, y int, collision bool) {
+func (self *Level) WallTexture(x int, y int) *textures.Texture {
 	if !InBounds(x, y) {
-		self.Enlarge(int32(x+1), int32(y+1))
+		return textures.DefaultTexture()
 	}
-	if collision {
-		self.Collision[y*int(self.Width)+x] = 1
-	} else {
-		self.Collision[y*int(self.Width)+x] = 0
+	return textures.Get(textures.Key(self.Walls[y*int(self.Width)+x]))
+}
+
+func WallTexture(x int, y int) *textures.Texture {
+	return currentLevel.WallTexture(x, y)
+}
+
+func (self *Level) FloorTexture() *sdl.Texture {
+	t, err := textures.Color(self.Floor)
+	if err != nil {
+		t, err = textures.DefaultTexture().Texture()
+		if err != nil {
+			panic(err)
+		}
 	}
+	return t
+}
+
+func FloorTexture() *sdl.Texture {
+	return currentLevel.FloorTexture()
+}
+
+func (self *Level) CeilingTexture() *sdl.Texture {
+	t, err := textures.Color(self.Ceiling)
+	if err != nil {
+		t, err = textures.DefaultTexture().Texture()
+		if err != nil {
+			panic(err)
+		}
+	}
+	return t
+}
+
+func CeilingTexture() *sdl.Texture {
+	return currentLevel.CeilingTexture()
 }

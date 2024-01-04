@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/firstperson"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/firstperson"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
+	"github.com/charmbracelet/log"
 )
 
 func main() {
@@ -11,6 +13,8 @@ func main() {
 
 	l := level.New()
 	level.Set(l)
+	textures.Register("assets/textures/2.bmp", 2)
+	textures.Register("assets/textures/1.bmp", 1)
 
 	core.P.X = 1.5
 	core.P.Y = 1.5
@@ -19,13 +23,18 @@ func main() {
 	core.Start("First Person Example")
 	defer core.Stop()
 
+	var err error
+
 	core.LockCursor(true)
 
 	// game loop
 	for core.Running() {
 		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
-		firstperson.RenderViewport()
+		err = firstperson.RenderViewport()
+		if err != nil {
+			log.Error(err)
+		}
 
 		// draw frame
 		core.Present()

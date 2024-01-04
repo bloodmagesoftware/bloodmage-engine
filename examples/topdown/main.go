@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/core"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/level"
-	"github.com/bloodmagesoftware/bloodmage-engine/pkg/engine/topdown"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/topdown"
 )
 
 func main() {

@@ -1,5 +1,5 @@
 // Bloodmage Engine
-// Copyright (C) 2023 Frank Mayer
+// Copyright (C) 2024 Frank Mayer
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,26 +17,30 @@
 package core
 
 import (
-	"github.com/charmbracelet/log"
-	"github.com/go-yaml/yaml"
 	"os"
 	"path/filepath"
+	"runtime"
+
+	"github.com/charmbracelet/log"
+	"github.com/go-yaml/yaml"
 )
 
 type Opt struct {
-	Vsync      bool      `yaml:"vsync"`
-	Fullscreen bool      `yaml:"fullscreen"`
-	PixelScale int32     `yaml:"pixel_scale"`
-	LogLevel   log.Level `yaml:"log_level"`
+	Vsync              bool      `yaml:"vsync"`
+	Fullscreen         bool      `yaml:"fullscreen"`
+	WindowedFullscreen bool      `yaml:"windowed_fullscreen"`
+	PixelScale         int32     `yaml:"pixel_scale"`
+	LogLevel           log.Level `yaml:"log_level"`
 }
 
 var (
 	dataPath   = "./data"
 	optionData = Opt{
-		Vsync:      true,
-		Fullscreen: true,
-		PixelScale: 4,
-		LogLevel:   log.ErrorLevel,
+		Vsync:              true,
+		Fullscreen:         true,
+		WindowedFullscreen: runtime.GOOS != "darwin",
+		PixelScale:         4,
+		LogLevel:           log.ErrorLevel,
 	}
 )
 
