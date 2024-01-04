@@ -90,18 +90,18 @@ func main() {
 			x := (mouseX + posX) / 32
 			y := (mouseY + posY) / 32
 
-			l.SetCollision(int(x), int(y), true)
+			l.SetWall(int(x), int(y), 1)
 		} else if mouseState&sdl.ButtonRMask() != 0 {
 			x := (mouseX + posX) / 32
 			y := (mouseY + posY) / 32
 
-			l.SetCollision(int(x), int(y), false)
+			l.SetWall(int(x), int(y), 0)
 		}
 
 		// draw level
 		for x := int32(0); x < l.Width; x++ {
 			for y := int32(0); y < l.Height; y++ {
-				collision := l.Collision[y*l.Width+x] == 1
+				collision := l.SaveCollision(int(x), int(y))
 
 				rect.X = x*32 - posX
 

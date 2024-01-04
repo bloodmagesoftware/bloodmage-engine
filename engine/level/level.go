@@ -190,6 +190,12 @@ func (self *Level) WallTexture(x int, y int) *textures.Texture {
 	}
 	return textures.Get(textures.Key(self.Walls[y*int(self.Width)+x]))
 }
+func (self *Level) SetWall(x int, y int, wall byte) {
+	if !self.InBounds(x, y) {
+		return
+	}
+	self.Walls[y*int(self.Width)+x] = wall
+}
 
 func WallTexture(x int, y int) *textures.Texture {
 	return currentLevel.WallTexture(x, y)
