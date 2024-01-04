@@ -6,6 +6,7 @@ import (
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/level"
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
 	"github.com/charmbracelet/log"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 func main() {
@@ -29,6 +30,9 @@ func main() {
 
 	// game loop
 	for core.Running() {
+		if core.KeyStates()[sdl.SCANCODE_ESCAPE] != 0 {
+			break
+		}
 		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
 		err = firstperson.RenderViewport()
