@@ -1,4 +1,5 @@
 require("proto")
+require("test")
 
 local bin_name = require("project").bin_name
 if Yab.os_type() == "windows" then
