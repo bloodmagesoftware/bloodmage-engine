@@ -22,13 +22,12 @@ import (
 )
 
 const (
-	targetFrameTime uint32 = 1000 / 60
+	targetFrameTime uint32 = 1000 / 120
 )
 
 var (
 	// DeltaTime is the time in seconds since last frame
 	DeltaTime      float32
-	bkg            = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 	title          string
 	width          int32 = 1280
 	widthF               = float32(width)
@@ -232,15 +231,6 @@ func Stop() {
 	sdl.Quit()
 }
 
-func beginRender() {
-	if err := renderer.SetDrawColor(bkg.R, bkg.G, bkg.B, bkg.A); err != nil {
-		log.Error(err)
-	}
-	if err := renderer.Clear(); err != nil {
-		log.Error(err)
-	}
-}
-
 // Running returns whether the game loop should continue or not.
 // Use this to determine when to exit the game loop.
 func Running() bool {
@@ -249,7 +239,6 @@ func Running() bool {
 	frameStartTime = now
 
 	eventLoop()
-	beginRender()
 	return running
 }
 
@@ -273,4 +262,8 @@ func Present() {
 	if frameTime < targetFrameTime {
 		sdl.Delay(targetFrameTime - frameTime)
 	}
+}
+
+func FPS() float32 {
+	return 1.0 / DeltaTime
 }

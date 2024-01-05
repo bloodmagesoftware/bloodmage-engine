@@ -185,7 +185,7 @@ func renderWalls() error {
 			}
 		}
 
-		// remove fish eye
+		// euclidean distance to purpendicular distance
 		depth *= math32.Cos(core.P.Angle - rayAngle)
 
 		// projection

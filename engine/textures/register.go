@@ -33,12 +33,18 @@ var (
 )
 
 func Register(texturepath string, key Key) *Texture {
-	t := &Texture{
-		path: texturepath,
-	}
+	t := Unregistered(texturepath)
 
 	// add texture to registry
 	registry[key] = t
+
+	return t
+}
+
+func Unregistered(texturepath string) *Texture {
+	t := &Texture{
+		path: texturepath,
+	}
 
 	return t
 }
