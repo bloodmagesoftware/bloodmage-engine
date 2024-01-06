@@ -1,3 +1,19 @@
+// Bloodmage Engine
+// Copyright (C) 2024 Frank Mayer
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
+
 package ui
 
 import (
@@ -25,24 +41,6 @@ func (document *document) Draw() error {
 		return err
 	}
 	return nil
-}
-
-// min size functions
-
-func (list *List) minSize() (int32, int32) {
-	return 0, 0
-}
-
-func (button *Button) minSize() (int32, int32) {
-	return 0, 0
-}
-
-func (text *Text) minSize() (int32, int32) {
-	return 0, 0
-}
-
-func (image *Image) minSize() (int32, int32) {
-	return 0, 0
 }
 
 // draw functions
@@ -109,7 +107,8 @@ func (list *List) draw() (drawFn, *sdl.Rect, error) {
 					W: width, H: itemRect.H,
 				}
 				if x+width > dest.W {
-					return fmt.Errorf("list item %d is too wide %d > %d", i, x+width, dest.W)
+					log.Warnf("list item %d is too wide %d > %d", i, x+width, dest.W)
+					itemDestRect.W = 0
 				}
 				itemDestRect.X = x
 				itemDestRect.W = width
@@ -131,7 +130,8 @@ func (list *List) draw() (drawFn, *sdl.Rect, error) {
 					W: itemRect.W, H: height,
 				}
 				if y+height > dest.H {
-					return fmt.Errorf("list item %d is too tall %d > %d", i, y+height, dest.H)
+					log.Warnf("list item %d is too tall %d > %d", i, y+height, dest.H)
+					itemDestRect.H = 0
 				}
 				itemDestRect.Y = y
 				itemDestRect.H = height
