@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 	"google.golang.org/protobuf/proto"
 )
@@ -206,7 +207,7 @@ func (self *Level) FloorTexture() *sdl.Texture {
 	if err != nil {
 		t, err = textures.DefaultTexture().Texture()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 	return t
@@ -221,7 +222,7 @@ func (self *Level) CeilingTexture() *sdl.Texture {
 	if err != nil {
 		t, err = textures.DefaultTexture().Texture()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 	return t

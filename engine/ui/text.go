@@ -1,11 +1,17 @@
 package ui
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 type Text struct {
 	doc     *document
 	id      string
 	content string
+	font    string
+	color   sdl.Color
 }
 
 func newText() *Text {
@@ -13,6 +19,8 @@ func newText() *Text {
 		doc:     nil,
 		id:      "",
 		content: "",
+		font:    "",
+		color:   sdl.Color{R: 255, G: 255, B: 255, A: 255},
 	}
 }
 
@@ -26,6 +34,13 @@ func (t *Text) SetAttribute(key, value string) error {
 		t.id = value
 	case "content":
 		t.content = value
+	case "font":
+		t.font = value
+	case "color":
+        var err error
+		if t.color, err = ParseColor(value); err != nil {
+			return err
+		}
 	default:
 		return errors.New("unknown attribute: " + key)
 	}

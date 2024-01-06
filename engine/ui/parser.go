@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/utils"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 type Element interface {
@@ -15,6 +16,8 @@ type Element interface {
 	SetAttribute(string, string) error
 	setTextContent(string) error
 	setDocument(*document)
+	minSize() (int32, int32)
+	draw() (drawFn, *sdl.Rect, error)
 }
 
 func CreateElement(name string) (Element, error) {

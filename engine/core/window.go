@@ -17,6 +17,8 @@
 package core
 
 import (
+	"runtime"
+
 	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -143,6 +145,8 @@ func Start(t string) {
 		log.Fatal("window already started")
 	}
 
+	runtime.LockOSThread()
+
 	var err error
 
 	title = t
@@ -266,4 +270,8 @@ func Present() {
 
 func FPS() float32 {
 	return 1.0 / DeltaTime
+}
+
+func ScreenRect() *sdl.Rect {
+	return &sdl.Rect{W: width, H: height}
 }
