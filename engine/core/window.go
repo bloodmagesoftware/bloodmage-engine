@@ -310,10 +310,8 @@ func eventLoop() {
 func Present() {
 	if cursorHover {
 		sdl.SetCursor(sdl.CreateSystemCursor(sdl.SYSTEM_CURSOR_HAND))
-		log.Debug("pointer cursor")
 	} else {
 		sdl.SetCursor(sdl.CreateSystemCursor(sdl.SYSTEM_CURSOR_ARROW))
-		log.Debug("arrow cursor")
 	}
 	renderer.Present()
 	frameTime := uint32(sdl.GetTicks64() - frameStartTime)
