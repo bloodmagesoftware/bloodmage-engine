@@ -221,6 +221,7 @@ func updateWindowSize() {
 	widthF = float32(width)
 	halfWidthF = widthF / 2
 	heightF = float32(height)
+	halfHeightF = heightF / 2
 
 	centerX = width / 2
 	centerY = height / 2
@@ -280,8 +281,8 @@ var (
 func eventLoop() {
 	var mouseX, mouseY int32
 	mouseX, mouseY, MouseState = sdl.GetMouseState()
-    MouseDeltaX = mouseX - MouseX
-    MouseDeltaY = mouseY - MouseY
+	MouseDeltaX = mouseX - MouseX
+	MouseDeltaY = mouseY - MouseY
 	if cursorLocked {
 		// reset mouse position to center of window
 		window.WarpMouseInWindow(centerX, centerY)
