@@ -22,7 +22,7 @@ import (
 	"runtime"
 
 	"github.com/charmbracelet/log"
-	"github.com/go-yaml/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 type Opt struct {
