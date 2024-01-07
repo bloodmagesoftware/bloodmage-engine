@@ -33,6 +33,7 @@ var (
 	colorTextures = make([]*sdl.Texture, 0xffffff)
 )
 
+// Register adds a texture to the registry to be used later.
 func Register(texturepath string, key Key) *Texture {
 	t := unregistered(texturepath)
 

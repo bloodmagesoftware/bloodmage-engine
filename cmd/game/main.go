@@ -89,6 +89,7 @@ func main() {
 	}
 
 	escDown := false
+
 	// game loop
 	for core.Running() {
 		if core.KeyStates()[sdl.SCANCODE_ESCAPE] != 0 {

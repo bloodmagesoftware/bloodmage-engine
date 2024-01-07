@@ -38,12 +38,14 @@ var (
 	}
 )
 
+// Set sets the current level.
 func Set(level *Level) {
 	currentLevel = level
 	currentLevelWidth = int(level.Width)
 	currentLevelHeight = int(level.Height)
 }
 
+// Load reads a level from the given path.
 func Load(path string) (*Level, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
