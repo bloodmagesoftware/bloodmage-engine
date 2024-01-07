@@ -16,19 +16,28 @@
 
 package ui
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 type Button struct {
-	doc     *document
-	id      string
-	content Element
+	doc       *document
+	id        string
+	mouseDown bool
+	content   Element
+	rect      sdl.Rect
 }
 
 func newButton() *Button {
 	return &Button{
-		doc:     nil,
-		id:      "",
-		content: nil,
+		doc:       nil,
+		id:        "",
+		mouseDown: false,
+		content:   nil,
+		rect:      sdl.Rect{},
 	}
 }
 
@@ -56,4 +65,41 @@ func (b *Button) setDocument(doc *document) {
 
 func (b *Button) setTextContent(content string) error {
 	return errors.New("button cannot have text content")
+}
+
+func (b *Button) setRect(rect *sdl.Rect) {
+	b.rect.X = rect.X
+	b.rect.Y = rect.Y
+	b.rect.W = rect.W
+	b.rect.H = rect.H
+}
+
+func (b *Button) MouseOver() bool {
+	if b.rect.X <= core.MouseX && core.MouseX <= b.rect.X+b.rect.W && b.rect.Y <= core.MouseY && core.MouseY <= b.rect.Y+b.rect.H {
+		core.NotifyCursorHover()
+		return true
+	}
+	b.mouseDown = false
+	return false
+}
+
+// Clicked returns true if these is a rising edge of the left mouse button
+func (b *Button) Clicked() bool {
+	lMouseDown := core.MouseState&sdl.ButtonLMask() != 0
+	if b.MouseOver() {
+		if lMouseDown {
+			b.mouseDown = true
+			return false
+		} else {
+			if b.mouseDown {
+				b.mouseDown = false
+				return true
+			} else {
+				return false
+			}
+		}
+	} else {
+		// b.mouseDown = false
+		return false
+	}
 }

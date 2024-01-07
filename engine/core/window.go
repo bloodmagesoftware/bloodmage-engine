@@ -246,7 +246,33 @@ func Running() bool {
 	return running
 }
 
+// Mouse states.
+var (
+	// MouseX is the current X position of the mouse.
+	MouseX int32
+	// MouseY is the current Y position of the mouse.
+	MouseY int32
+	// MouseDeltaX is the change in X position of the mouse since the last frame.
+	MouseDeltaX int32
+	// MouseDeltaY is the change in Y position of the mouse since the last frame.
+	MouseDeltaY int32
+	// MouseState is the current state of the mouse.
+	MouseState uint32
+)
+
 func eventLoop() {
+	var mouseX, mouseY int32
+	mouseX, mouseY, MouseState = sdl.GetMouseState()
+	if cursorLocked {
+		MouseDeltaX = mouseX - MouseX
+		MouseDeltaY = mouseY - MouseY
+	} else {
+		MouseDeltaX = 0
+		MouseDeltaY = 0
+	}
+	MouseX = mouseX
+	MouseY = mouseY
+
 	keyStates = sdl.GetKeyboardState()
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch event.GetType() {
@@ -261,11 +287,18 @@ func eventLoop() {
 // Present draws the frame to the screen.
 // Call this at the very end of the game loop.
 func Present() {
+	if cursorHover {
+		sdl.SetCursor(sdl.CreateSystemCursor(sdl.SYSTEM_CURSOR_HAND))
+	} else {
+		sdl.SetCursor(sdl.CreateSystemCursor(sdl.SYSTEM_CURSOR_ARROW))
+	}
 	renderer.Present()
 	frameTime := uint32(sdl.GetTicks64() - frameStartTime)
 	if frameTime < targetFrameTime {
 		sdl.Delay(targetFrameTime - frameTime)
 	}
+
+	cursorHover = false
 }
 
 func FPS() float32 {
@@ -274,4 +307,10 @@ func FPS() float32 {
 
 func ScreenRect() *sdl.Rect {
 	return &sdl.Rect{W: width, H: height}
+}
+
+var cursorHover = false
+
+func NotifyCursorHover() {
+	cursorHover = true
 }

@@ -53,7 +53,12 @@ func (button *Button) draw() (drawFn, *sdl.Rect, error) {
 	if button.content == nil {
 		return nil, defaultRect, errors.New("Button content is nil")
 	}
-	return button.content.draw()
+
+	fn, rect, err := button.content.draw()
+	return func(dest *sdl.Rect) error {
+		button.setRect(dest)
+		return fn(dest)
+	}, rect, err
 }
 
 func (list *List) draw() (drawFn, *sdl.Rect, error) {

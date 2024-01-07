@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/firstperson"
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/font"
@@ -43,7 +45,7 @@ func main() {
 	core.Start("First Person Example")
 	defer core.Stop()
 
-	core.LockCursor(true)
+	core.LockCursor(false)
 
 	err = ttf.Init()
 	if err != nil {
@@ -55,12 +57,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	btnEl, ok := document.GetButtonElementById("btn")
+	if !ok {
+		log.Fatal("Could not find element with id 'btn'")
+	}
+	i := 0
+
+	counterEl, ok := document.GetTextElementById("counter")
+	if !ok {
+		log.Fatal("Could not find element with id 'counter'")
+	}
+
 	// game loop
 	for core.Running() {
 		if core.KeyStates()[sdl.SCANCODE_ESCAPE] != 0 {
 			break
 		}
-		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
 		if err = firstperson.RenderViewport(); err != nil {
 			log.Fatal(err)
@@ -68,6 +80,11 @@ func main() {
 
 		if err = document.Draw(); err != nil {
 			log.Fatal(err)
+		}
+
+		if btnEl.Clicked() {
+			i++
+			_ = counterEl.SetContent(fmt.Sprintf("Clicked %d times", i))
 		}
 
 		// draw frame
