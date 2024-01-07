@@ -2,6 +2,8 @@
 
 90s style 3D game engine built in [Go](https://go.dev/) using [SDL2](https://www.libsdl.org/)
 
+[![Test](https://github.com/bloodmagesoftware/bloodmage-engine/actions/workflows/test.yml/badge.svg)](https://github.com/bloodmagesoftware/bloodmage-engine/actions/workflows/test.yml)
+
 **This project is still under construction!**
 
 [Create your own project](https://workbench.bloodmagesoftware.dev)
