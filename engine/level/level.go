@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 	"google.golang.org/protobuf/proto"
 )
@@ -171,25 +172,13 @@ func Collision(x int, y int) bool {
 	return currentLevel.SaveCollision(x, y)
 }
 
-var CollisionRound = float32(0.4921875)
-
-func CollisionF(x float32, y float32) bool {
-	for y1 := int(y - CollisionRound); y1 <= int(y+CollisionRound); y1++ {
-		for x1 := int(x - CollisionRound); x1 <= int(x+CollisionRound); x1++ {
-			if Collision(x1, y1) {
-				return true
-			}
-		}
-	}
-	return false
-}
-
 func (self *Level) WallTexture(x int, y int) *textures.Texture {
 	if !InBounds(x, y) {
 		return textures.DefaultTexture()
 	}
 	return textures.Get(textures.Key(self.Walls[y*int(self.Width)+x]))
 }
+
 func (self *Level) SetWall(x int, y int, wall byte) {
 	if !self.InBounds(x, y) {
 		return
@@ -206,7 +195,7 @@ func (self *Level) FloorTexture() *sdl.Texture {
 	if err != nil {
 		t, err = textures.DefaultTexture().Texture()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 	return t
@@ -221,7 +210,7 @@ func (self *Level) CeilingTexture() *sdl.Texture {
 	if err != nil {
 		t, err = textures.DefaultTexture().Texture()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 	return t

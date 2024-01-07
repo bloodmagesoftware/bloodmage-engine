@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<List xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="schema.xsd"
+    orientation="vertical">
+    <Text id="counter" color="#ff1493">0</Text>
+    <Button id="btn">
+        <Text>Click me!</Text>
+    </Button>
+</List>

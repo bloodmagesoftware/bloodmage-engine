@@ -13,7 +13,7 @@ func main() {
 
 	l, err := level.Load("assets/levels/level1.bmlvl")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	level.Set(l)
 
@@ -25,7 +25,6 @@ func main() {
 
 	// game loop
 	for core.Running() {
-		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
 		err = firstperson.RenderViewport()
 		if err != nil {

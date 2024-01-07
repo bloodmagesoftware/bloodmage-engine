@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="Image">
+        <xs:complexType>
+            <xs:attribute name="src" type="xs:string" use="required" />
+            <xs:attribute name="width" type="xs:string" use="required" />
+            <xs:attribute name="height" type="xs:string" use="required" />
+            <xs:attribute name="id" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Text">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:string" />
+                    <xs:attribute name="font" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- -->
+
+    <xs:element name="List">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any minOccurs="1" maxOccurs="unbounded" processContents="strict" />
+            </xs:sequence>
+            <xs:attribute name="orientation" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="vertical" />
+                        <xs:enumeration value="horizontal" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Button">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any minOccurs="1" maxOccurs="1" processContents="strict" />
+            </xs:sequence>
+            <xs:attribute name="id" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Document / Root  needs at least ParentElement or ChildElement-->
+
+    <xs:element name="Document">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any minOccurs="1" maxOccurs="unbounded" processContents="strict" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

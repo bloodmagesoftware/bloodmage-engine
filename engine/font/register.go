@@ -14,28 +14,101 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://github.com/bloodmagesoftware/bloodmage-engine/blob/main/LICENSE.md>.
 
+// Package font is for dealing with ttf fonts in the ui.
+//
+// Call font.Init() before using any other font function.
+// Call font.Quit() at the end of your game.
 package font
 
 import (
-	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
+	"fmt"
+	"os"
+
+	"github.com/veandco/go-sdl2/ttf"
+)
+
+var (
+	// fonts holds all registered fonts wether they are currently loaded or not.
+	fonts map[string]*font
+	// defaultFont is the font that is used when no other font is specified.
+	defaultFont *font
 )
 
 type font struct {
-	startChar    uint32
-	endChar      uint32
-	texture      *textures.Texture
-	charWidth    int32
-	charHeight   int32
-	collumnCount int32
+	path string
+	ttf  *ttf.Font
 }
 
-func Load(texturePath string, startChar uint32, endChar uint32, charWidth int32, charHeight int32, collumnCount int32) *font {
-	return &font{
-		startChar:    startChar,
-		endChar:      endChar,
-		texture:      textures.Unregistered(texturePath),
-		charWidth:    charWidth,
-		charHeight:   charHeight,
-		collumnCount: collumnCount,
+// Font ensures the font is loaded and returns it.
+func (f *font) Font() (*ttf.Font, error) {
+	if f.ttf != nil {
+		return f.ttf, nil
 	}
+
+	font, err := ttf.OpenFont(f.path, 32)
+	if err != nil {
+		return nil, err
+	}
+	f.ttf = font
+
+	return font, nil
+}
+
+func Init() error {
+	return ttf.Init()
+}
+
+// Quit closes all loaded fonts.
+// After calling this function you can no longer use any font functions before calling Init() again.
+func Quit() {
+	for _, font := range fonts {
+		if font.ttf != nil {
+			font.ttf.Close()
+			font.ttf = nil
+		}
+	}
+	ttf.Quit()
+}
+
+func Register(fontPath string, name string) error {
+	if fonts == nil {
+		fonts = make(map[string]*font)
+	}
+	if _, ok := fonts[name]; ok {
+		return fmt.Errorf("font %s already registered", name)
+	}
+	// check if file exists with os.Stat()
+	if _, err := os.Stat(fontPath); err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("font %s does not exist", fontPath)
+		} else {
+			return fmt.Errorf("error checking if font %s exists: %s", fontPath, err)
+		}
+	}
+	fonts[name] = &font{
+		path: fontPath,
+	}
+	return nil
+}
+
+func SetDefault(name string) error {
+	if _, ok := fonts[name]; !ok {
+		return fmt.Errorf("font %s not registered", name)
+	}
+	defaultFont = fonts[name]
+	return nil
+}
+
+func Default() (*ttf.Font, error) {
+	if defaultFont != nil {
+		return defaultFont.Font()
+	}
+	return nil, fmt.Errorf("no default font set")
+}
+
+func Get(name string) (*ttf.Font, error) {
+	if font, ok := fonts[name]; ok {
+		return font.Font()
+	}
+	return nil, fmt.Errorf("font %s not registered", name)
 }

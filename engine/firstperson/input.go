@@ -33,28 +33,12 @@ const (
 	turnSpeed  float32 = 0.1
 )
 
-var (
-	MouseX      int32
-	MouseDeltaX int32
-	MouseState  uint32
-)
-
-func GetMouseInput() {
-	MouseX, _, MouseState = sdl.GetMouseState()
-	if core.IsCursorLocked() {
-		MouseDeltaX = MouseX - core.CenterX()
-		core.Window().WarpMouseInWindow(core.CenterX(), core.CenterY())
-	} else {
-		MouseDeltaX = 0
-	}
-}
-
 func KeyDown(key uint8) bool {
 	return core.KeyStates()[key] != 0
 }
 
 func MovePlayer() {
-	core.P.Angle += float32(MouseDeltaX) * turnSpeed * core.DeltaTime
+	core.P.Angle += float32(core.MouseDeltaX) * turnSpeed * core.DeltaTime
 
 	if KeyDown(KeyForward) {
 		core.P.Speed = 1

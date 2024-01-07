@@ -20,6 +20,7 @@ import (
 	"image/color"
 
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -33,7 +34,7 @@ var (
 )
 
 func Register(texturepath string, key Key) *Texture {
-	t := Unregistered(texturepath)
+	t := unregistered(texturepath)
 
 	// add texture to registry
 	registry[key] = t
@@ -41,7 +42,7 @@ func Register(texturepath string, key Key) *Texture {
 	return t
 }
 
-func Unregistered(texturepath string) *Texture {
+func unregistered(texturepath string) *Texture {
 	t := &Texture{
 		path: texturepath,
 	}
@@ -65,13 +66,13 @@ func DefaultTexture() *Texture {
 	// create pink texture for missing textures using sdl
 	s, err := sdl.CreateRGBSurface(0, 1, 1, 32, 0, 0, 0, 0)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	s.Set(0, 0, color.RGBA{R: 255, G: 0, B: 255, A: 255})
 
 	t, err := core.Renderer().CreateTextureFromSurface(s)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	s.Free()
