@@ -16,27 +16,27 @@
 
 package ui
 
-type document struct {
+type Document struct {
 	root  Element
 	idMap map[string]Element
 }
 
-func newDocument() document {
-	return document{
+func newDocument() Document {
+	return Document{
 		idMap: make(map[string]Element),
 	}
 }
 
-func (d *document) RootElement() Element {
+func (d *Document) RootElement() Element {
 	return d.root
 }
 
-func (d *document) GetElementById(id string) (Element, bool) {
+func (d *Document) GetElementById(id string) (Element, bool) {
 	e, ok := d.idMap[id]
 	return e, ok
 }
 
-func (d *document) GetTextElementById(id string) (*Text, bool) {
+func (d *Document) GetTextElementById(id string) (*Text, bool) {
 	e, ok := d.idMap[id]
 	if !ok {
 		return nil, false
@@ -48,7 +48,7 @@ func (d *document) GetTextElementById(id string) (*Text, bool) {
 	return t, true
 }
 
-func (d *document) GetButtonElementById(id string) (*Button, bool) {
+func (d *Document) GetButtonElementById(id string) (*Button, bool) {
 	e, ok := d.idMap[id]
 	if !ok {
 		return nil, false
@@ -60,7 +60,7 @@ func (d *document) GetButtonElementById(id string) (*Button, bool) {
 	return b, true
 }
 
-func (d *document) GetImageElementById(id string) (*Image, bool) {
+func (d *Document) GetImageElementById(id string) (*Image, bool) {
 	e, ok := d.idMap[id]
 	if !ok {
 		return nil, false
@@ -72,7 +72,7 @@ func (d *document) GetImageElementById(id string) (*Image, bool) {
 	return i, true
 }
 
-func (d *document) GetListElementById(id string) (*List, bool) {
+func (d *Document) GetListElementById(id string) (*List, bool) {
 	e, ok := d.idMap[id]
 	if !ok {
 		return nil, false

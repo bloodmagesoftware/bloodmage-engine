@@ -25,7 +25,7 @@ import (
 )
 
 type Image struct {
-	doc     *document
+	doc     *Document
 	id      string
 	src     string
 	width   int32
@@ -76,7 +76,7 @@ func (i *Image) SetAttribute(key, value string) error {
 	return nil
 }
 
-func (i *Image) setDocument(doc *document) {
+func (i *Image) setDocument(doc *Document) {
 	i.doc = doc
 }
 

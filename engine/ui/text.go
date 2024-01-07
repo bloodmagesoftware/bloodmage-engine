@@ -23,7 +23,7 @@ import (
 )
 
 type Text struct {
-	doc     *document
+	doc     *Document
 	id      string
 	content string
 	font    string
@@ -63,7 +63,7 @@ func (t *Text) SetAttribute(key, value string) error {
 	return nil
 }
 
-func (t *Text) setDocument(doc *document) {
+func (t *Text) setDocument(doc *Document) {
 	t.doc = doc
 }
 

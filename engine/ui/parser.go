@@ -31,7 +31,7 @@ type Element interface {
 	AppendChild(Element) error
 	SetAttribute(string, string) error
 	setTextContent(string) error
-	setDocument(*document)
+	setDocument(*Document)
 	draw() (drawFn, *sdl.Rect, error)
 }
 
@@ -50,7 +50,7 @@ func CreateElement(name string) (Element, error) {
 	}
 }
 
-func Parse(path string) (*document, error) {
+func Parse(path string) (*Document, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
