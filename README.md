@@ -20,8 +20,21 @@
 
 ## Dependencies
 
-- [github.com/charmbracelet/log](https://pkg.go.dev/github.com/charmbracelet/log)
-- [github.com/chewxy/math32](https://pkg.go.dev/github.com/chewxy/math32)
-- [github.com/go-yaml/yaml](https://pkg.go.dev/github.com/go-yaml/yaml)
-- [github.com/veandco/go-sdl2](https://pkg.go.dev/github.com/veandco/go-sdl2)
-- [google.golang.org/protobuf](https://pkg.go.dev/google.golang.org/protobuf)
+- [github.com/charmbracelet/log (MIT license)](https://pkg.go.dev/github.com/charmbracelet/log)
+- [github.com/chewxy/math32 (BSD-2-Clause license)](https://pkg.go.dev/github.com/chewxy/math32)
+- [github.com/go-yaml/yaml (MIT License & MIT License)](https://pkg.go.dev/github.com/go-yaml/yaml)
+- [github.com/veandco/go-sdl2 (BSD-3-Clause license)](https://pkg.go.dev/github.com/veandco/go-sdl2)
+- [google.golang.org/protobuf (BSD-3-Clause license)](https://pkg.go.dev/google.golang.org/protobuf)
+
+## Disclaimer
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
