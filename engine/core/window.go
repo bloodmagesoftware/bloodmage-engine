@@ -233,6 +233,7 @@ func Stop() {
 	_ = window.Destroy()
 	_ = renderer.Destroy()
 	sdl.Quit()
+	log.Print("Engine stopped")
 }
 
 // Running returns whether the game loop should continue or not.

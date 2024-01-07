@@ -172,25 +172,13 @@ func Collision(x int, y int) bool {
 	return currentLevel.SaveCollision(x, y)
 }
 
-var CollisionRound = float32(0.4921875)
-
-func CollisionF(x float32, y float32) bool {
-	for y1 := int(y - CollisionRound); y1 <= int(y+CollisionRound); y1++ {
-		for x1 := int(x - CollisionRound); x1 <= int(x+CollisionRound); x1++ {
-			if Collision(x1, y1) {
-				return true
-			}
-		}
-	}
-	return false
-}
-
 func (self *Level) WallTexture(x int, y int) *textures.Texture {
 	if !InBounds(x, y) {
 		return textures.DefaultTexture()
 	}
 	return textures.Get(textures.Key(self.Walls[y*int(self.Width)+x]))
 }
+
 func (self *Level) SetWall(x int, y int, wall byte) {
 	if !self.InBounds(x, y) {
 		return

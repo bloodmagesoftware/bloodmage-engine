@@ -25,7 +25,6 @@ func main() {
 
 	// game loop
 	for core.Running() {
-		firstperson.GetMouseInput()
 		firstperson.MovePlayer()
 		err = firstperson.RenderViewport()
 		if err != nil {

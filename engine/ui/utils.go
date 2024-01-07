@@ -142,5 +142,6 @@ func parseHex(hex string) (uint8, error) {
 
 // ParseColor parses a color string into an sdl.Color struct.
 func ParseColor(color string) (sdl.Color, error) {
-	return sdl.Color{}, nil
+	r, g, b, a, err := ParseColorChannels(color)
+	return sdl.Color{R: r, G: g, B: b, A: a}, err
 }
