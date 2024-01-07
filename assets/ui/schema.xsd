@@ -5,6 +5,8 @@
     <xs:element name="Image">
         <xs:complexType>
             <xs:attribute name="src" type="xs:string" use="required" />
+            <xs:attribute name="width" type="xs:string" use="required" />
+            <xs:attribute name="height" type="xs:string" use="required" />
             <xs:attribute name="id" type="xs:string" />
         </xs:complexType>
     </xs:element>

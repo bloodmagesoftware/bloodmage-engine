@@ -46,7 +46,18 @@ func (document *document) Draw() error {
 // draw functions
 
 func (image *Image) draw() (drawFn, *sdl.Rect, error) {
-	return nil, defaultRect, nil
+	t, err := image.Texture()
+	if err != nil {
+		return nil, defaultRect, err
+	}
+	rect, err := image.rect()
+	if err != nil {
+		return nil, defaultRect, err
+	}
+
+	return func(dest *sdl.Rect) error {
+		return core.Renderer().Copy(t, nil, dest)
+	}, rect, nil
 }
 
 func (button *Button) draw() (drawFn, *sdl.Rect, error) {
