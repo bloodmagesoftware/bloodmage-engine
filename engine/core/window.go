@@ -121,7 +121,11 @@ func LockCursor(lock bool) {
 		}
 		sdl.SetRelativeMouseMode(true)
 		window.SetGrab(true)
+		// reset mouse position to center of window
 		window.WarpMouseInWindow(centerX, centerY)
+		MouseX = centerX
+		MouseY = centerY
+
 	} else {
 		_, err := sdl.ShowCursor(sdl.ENABLE)
 		if err != nil {
@@ -244,7 +248,19 @@ func Running() bool {
 	frameStartTime = now
 
 	eventLoop()
+	clearScreen()
 	return running
+}
+
+func clearScreen() {
+	err := renderer.SetDrawColor(0, 0, 0, 255)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = renderer.Clear()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Mouse states.
@@ -267,12 +283,16 @@ func eventLoop() {
 	if cursorLocked {
 		MouseDeltaX = mouseX - MouseX
 		MouseDeltaY = mouseY - MouseY
+		// reset mouse position to center of window
+		window.WarpMouseInWindow(centerX, centerY)
+		MouseX = centerX
+		MouseY = centerY
 	} else {
 		MouseDeltaX = 0
 		MouseDeltaY = 0
+		MouseX = mouseX
+		MouseY = mouseY
 	}
-	MouseX = mouseX
-	MouseY = mouseY
 
 	keyStates = sdl.GetKeyboardState()
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -310,7 +330,9 @@ func ScreenRect() *sdl.Rect {
 	return &sdl.Rect{W: width, H: height}
 }
 
-var cursorHover = false
+var (
+	cursorHover = false
+)
 
 func NotifyCursorHover() {
 	cursorHover = true

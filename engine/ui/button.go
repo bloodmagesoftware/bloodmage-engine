@@ -24,7 +24,7 @@ import (
 )
 
 type Button struct {
-	doc       *document
+	doc       *Document
 	id        string
 	mouseDown bool
 	content   Element
@@ -59,7 +59,7 @@ func (b *Button) SetAttribute(key, value string) error {
 	return nil
 }
 
-func (b *Button) setDocument(doc *document) {
+func (b *Button) setDocument(doc *Document) {
 	b.doc = doc
 }
 

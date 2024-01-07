@@ -27,7 +27,7 @@ const (
 )
 
 type List struct {
-	doc *document
+	doc *Document
 	orientation
 	items []Element
 }
@@ -62,7 +62,7 @@ func (l *List) SetAttribute(key, value string) error {
 	return nil
 }
 
-func (l *List) setDocument(doc *document) {
+func (l *List) setDocument(doc *Document) {
 	l.doc = doc
 }
 

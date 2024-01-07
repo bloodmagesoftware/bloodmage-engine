@@ -30,7 +30,7 @@ import (
 const (
 	fov            = math32.Pi / 3
 	halfFov        = fov / 2
-	maxDepth int32 = 20
+	maxDepth int32 = 1024
 )
 
 var (

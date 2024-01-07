@@ -29,7 +29,7 @@ import (
 
 type drawFn func(dest *sdl.Rect) error
 
-func (document *document) Draw() error {
+func (document *Document) Draw() error {
 	fn, rect, err := document.root.draw()
 	if err != nil {
 		return err
@@ -182,7 +182,13 @@ func (text *Text) draw() (drawFn, *sdl.Rect, error) {
 		}
 	}
 
-	surface, err := f.RenderUTF8Solid(text.content, text.color)
+	var surface *sdl.Surface
+	// text.content is not allowed to be empty
+	if text.content == "" {
+		surface, err = f.RenderUTF8Solid(" ", text.color)
+	} else {
+		surface, err = f.RenderUTF8Solid(text.content, text.color)
+	}
 	if err != nil {
 		return nil, defaultRect, err
 	}
