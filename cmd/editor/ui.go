@@ -69,9 +69,5 @@ func UpdateUi() error {
 		return err
 	}
 
-	if SaveEl.Clicked() {
-		SaveLevel()
-	}
-
 	return nil
 }

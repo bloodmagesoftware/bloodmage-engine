@@ -280,16 +280,14 @@ var (
 func eventLoop() {
 	var mouseX, mouseY int32
 	mouseX, mouseY, MouseState = sdl.GetMouseState()
+    MouseDeltaX = mouseX - MouseX
+    MouseDeltaY = mouseY - MouseY
 	if cursorLocked {
-		MouseDeltaX = mouseX - MouseX
-		MouseDeltaY = mouseY - MouseY
 		// reset mouse position to center of window
 		window.WarpMouseInWindow(centerX, centerY)
 		MouseX = centerX
 		MouseY = centerY
 	} else {
-		MouseDeltaX = 0
-		MouseDeltaY = 0
 		MouseX = mouseX
 		MouseY = mouseY
 	}

@@ -46,8 +46,17 @@ func main() {
 		if err := UpdateUi(); err != nil {
 			log.Fatal(err)
 		}
+
 		if ExitEl.Clicked() {
 			break
+		}
+
+		if SaveEl.Clicked() {
+			SaveLevel()
+		}
+
+		if !ExitEl.MouseOver() && !SaveEl.MouseOver() {
+			EditLevel()
 		}
 
 		// draw frame

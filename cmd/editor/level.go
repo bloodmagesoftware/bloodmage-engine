@@ -65,10 +65,8 @@ func SaveLevel() {
 }
 
 var (
-	mouseX int32
-	mouseY int32
-	posX   int32
-	posY   int32
+	posX int32
+	posY int32
 )
 
 var (
@@ -79,10 +77,9 @@ func DrawLevel() error {
 	rect := sdl.Rect{X: 0, Y: 0, W: unit, H: unit}
 
 	// control camera
-	mx, my, mouseState := sdl.GetMouseState()
-	if mouseState&sdl.ButtonMMask() != 0 {
-		posX -= int32(mx - mouseX)
-		posY -= int32(my - mouseY)
+	if core.MouseState&sdl.ButtonMMask() != 0 {
+		posX -= core.MouseDeltaX
+		posY -= core.MouseDeltaY
 
 		if posX < -unit {
 			posX = -unit
@@ -97,37 +94,17 @@ func DrawLevel() error {
 		if posY > l.Height*unit-unit {
 			posY = l.Height*unit - unit
 		}
-
-		mouseX = mx
-		mouseY = my
-	} else {
-		mouseX = mx
-		mouseY = my
-	}
-
-	if mouseState&sdl.ButtonLMask() != 0 {
-		x := (mouseX + posX) / unit
-		y := (mouseY + posY) / unit
-		l.SetWall(int(x), int(y), 1)
-		unsavedChanges = true
-	} else if mouseState&sdl.ButtonRMask() != 0 {
-		x := (mouseX + posX) / unit
-		y := (mouseY + posY) / unit
-		l.SetWall(int(x), int(y), 0)
-		unsavedChanges = true
 	}
 
 	// draw level
 	for x := int32(0); x < l.Width; x++ {
+		rect.X = x*unit - posX
+		if rect.X < -unit || rect.X > core.Width() {
+			continue
+		}
+
 		for y := int32(0); y < l.Height; y++ {
-			rect.X = x*unit - posX
-
-			if rect.X < -unit || rect.X > core.Width() {
-				continue
-			}
-
 			rect.Y = y*unit - posY
-
 			if rect.Y < -unit || rect.Y > core.Height() {
 				continue
 			}
@@ -154,4 +131,18 @@ func DrawLevel() error {
 	}
 
 	return nil
+}
+
+func EditLevel() {
+	if core.MouseState&sdl.ButtonLMask() != 0 {
+		x := (core.MouseX + posX) / unit
+		y := (core.MouseY + posY) / unit
+		l.SetWall(int(x), int(y), 1)
+		unsavedChanges = true
+	} else if core.MouseState&sdl.ButtonRMask() != 0 {
+		x := (core.MouseX + posX) / unit
+		y := (core.MouseY + posY) / unit
+		l.SetWall(int(x), int(y), 0)
+		unsavedChanges = true
+	}
 }
