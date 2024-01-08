@@ -211,7 +211,7 @@ func renderWalls() error {
 			return err
 		}
 		// distant walls are darker
-		darkness := uint8(int32((depth+1)*255) / maxDepth)
+		darkness := uint8(int32((depth+1)*255) / 64)
 		err = core.Renderer().SetDrawColor(0, 0, 0, darkness)
 		if err != nil {
 			return err
