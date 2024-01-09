@@ -41,6 +41,7 @@ func main() {
 	level.Set(l)
 
 	// register textures
+	textures.Init()
 	textures.Register("assets/textures/1.bmp", 1)
 	textures.Register("assets/textures/2.bmp", 2)
 

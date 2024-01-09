@@ -14,28 +14,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package textures
+package core
 
-import (
-	"time"
+import "sync"
 
-	"github.com/veandco/go-sdl2/sdl"
+type mainThreadFunc func() error
+
+var (
+	// mainThreadQueue contains functions to be run on the main thread
+	mainThreadQueue = make([]mainThreadFunc, 0)
+	// mainThreadMutex is used to lock the main thread when running queued functions
+	mainThreadMutex = &sync.Mutex{}
 )
 
-type Texture struct {
-	path     string
-	width    int32
-	height   int32
-	texture  *sdl.Texture
-	lastUsed time.Time
+// RunOnMainThread runs the given function on the main thread.
+func RunOnMainThread(fn mainThreadFunc) {
+	mainThreadQueue = append(mainThreadQueue, fn)
 }
 
-func (self *Texture) Width() int32 {
-	return self.width
-}
+func runMainThreadQueue() error {
+	mainThreadMutex.Lock()
+	defer mainThreadMutex.Unlock()
 
-func (self *Texture) Height() int32 {
-	return self.height
-}
+	for _, fn := range mainThreadQueue {
+		if err := fn(); err != nil {
+			return err
+		}
+	}
 
-type Key byte
+	mainThreadQueue = make([]mainThreadFunc, 0)
+	return nil
+}

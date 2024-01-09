@@ -17,11 +17,21 @@
 package textures
 
 import (
+	"errors"
+	"sync"
+	"time"
+
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/charmbracelet/log"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 func (t *Texture) load() error {
+	loaderMutex.Lock()
+	defer loaderMutex.Unlock()
+
+	t.lastUsed = time.Now()
+
 	if t.texture != nil {
 		return nil
 	}
@@ -30,13 +40,13 @@ func (t *Texture) load() error {
 	if err != nil {
 		return err
 	}
+	defer surface.Free()
 	t.texture, err = core.Renderer().CreateTextureFromSurface(surface)
 	if err != nil {
 		return err
 	}
 	t.height = surface.H
 	t.width = surface.W
-	surface.Free()
 
 	return nil
 }
@@ -56,4 +66,48 @@ func (t *Texture) unload() error {
 func (t *Texture) Texture() (*sdl.Texture, error) {
 	err := t.load()
 	return t.texture, err
+}
+
+var loaderMutex = sync.Mutex{}
+
+const oldTextureTimeout = 5 * time.Second
+
+func monitor() {
+	for {
+		time.Sleep(10 * time.Second)
+		gc()
+	}
+}
+
+func gc() {
+	loaderMutex.Lock()
+	defer loaderMutex.Unlock()
+	now := time.Now()
+	for _, t := range registry {
+		if t.texture == nil {
+			continue
+		}
+		age := now.Sub(t.lastUsed)
+		log.Debug("Checking texture for unload", "path", t.path, "age", age)
+		if age > oldTextureTimeout {
+			log.Debug("Queueing texture for unload", "path", t.path)
+			t := t
+			core.RunOnMainThread(func() error {
+				if t == nil || t.texture == nil {
+					return nil
+				}
+				err := t.unload()
+				if err != nil {
+					return errors.Join(
+						errors.New("Error destroying texture"),
+						err,
+					)
+				} else {
+					log.Debug("Unloaded texture", "path", t.path)
+				}
+				return nil
+			})
+		}
+	}
+
 }

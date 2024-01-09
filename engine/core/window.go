@@ -244,6 +244,11 @@ func Stop() {
 // Running returns whether the game loop should continue or not.
 // Use this to determine when to exit the game loop.
 func Running() bool {
+	err := runMainThreadQueue()
+	if err != nil {
+		log.Error(err)
+		return false
+	}
 	now := sdl.GetTicks64()
 	DeltaTime = float32(now-frameStartTime) / 1000.0
 	frameStartTime = now

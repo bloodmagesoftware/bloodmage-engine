@@ -33,6 +33,11 @@ var (
 	colorTextures = make([]*sdl.Texture, 0xffffff)
 )
 
+// Init starts the texture garbage collector.
+func Init() {
+	go monitor()
+}
+
 // Register adds a texture to the registry to be used later.
 func Register(texturepath string, key Key) *Texture {
 	t := unregistered(texturepath)
@@ -45,7 +50,8 @@ func Register(texturepath string, key Key) *Texture {
 
 func unregistered(texturepath string) *Texture {
 	t := &Texture{
-		path: texturepath,
+		path:    texturepath,
+		texture: nil,
 	}
 
 	return t

@@ -19,6 +19,7 @@ package main
 
 import (
 	"github.com/bloodmagesoftware/bloodmage-engine/engine/core"
+	"github.com/bloodmagesoftware/bloodmage-engine/engine/textures"
 	"github.com/charmbracelet/log"
 )
 
@@ -35,6 +36,7 @@ func main() {
 	core.InitOptions()
 	core.Options().Fullscreen = false
 	core.Start("Bloodmage Engine - Editor :: " + levelFile)
+	textures.Init()
 	defer core.Stop()
 
 	// game loop

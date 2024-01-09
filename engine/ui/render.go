@@ -205,7 +205,12 @@ func (text *Text) draw() (drawFn, *sdl.Rect, error) {
 	}
 
 	return func(dest *sdl.Rect) error {
-		defer texture.Destroy()
+		defer func() {
+			err := texture.Destroy()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 		return core.Renderer().Copy(texture, &scrRect, dest)
 	}, &scrRect, nil
 }
