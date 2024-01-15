@@ -5,7 +5,7 @@ go 1.21.5
 require (
 	github.com/charmbracelet/log v0.3.1
 	github.com/chewxy/math32 v1.10.1
-	github.com/veandco/go-sdl2 v0.4.37
+	github.com/veandco/go-sdl2 v0.4.38
 	google.golang.org/protobuf v1.32.0
 	gopkg.in/yaml.v3 v3.0.1
 )
